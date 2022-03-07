@@ -52,6 +52,37 @@ public:
         }
     }
 
+    uint64_t storage_write(uint64_t key_len, uint64_t key_ptr, uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
+        std::vector<uint8_t> key = get_vec_from_memory_or_register(key_ptr, key_len);
+        std::vector<uint8_t> value = get_vec_from_memory_or_register(value_ptr, value_len);
+
+        std::vector<uint8_t> read_old_value = m_ext.storage_get(key);
+
+        m_ext.storage_set(key, value);
+
+        if (!read_old_value.empty()) {
+            internal_write_register(register_id, read_old_value);
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    uint64_t storage_remove(uint64_t key_len, uint64_t key_ptr, uint64_t register_id) {
+        std::vector<uint8_t> key = get_vec_from_memory_or_register(key_ptr, key_len);
+        std::vector<uint8_t> read = m_ext.storage_get(key);
+
+        if (!read.empty()) {
+            internal_write_register(register_id, read);
+            m_ext.storage_remove(key);
+            return 1;
+        } else {
+            return 0;
+        }
+
+        return 0;
+    }
+
     void value_return(uint64_t key_len, uint64_t key_ptr) {
         return_data_value = get_vec_from_memory_or_register(key_ptr, key_len);
     }
@@ -65,7 +96,18 @@ public:
 
         auto value_hash = get_sha256(value);
 
-        internal_write_register(register_id,value_hash);
+        internal_write_register(register_id, value_hash);
+    }
+
+    // MATH API
+    void random_seed(uint64_t register_id) {
+        internal_write_register(register_id, m_context.random_seed);
+    }
+
+    // LOG
+    void log_utf8(uint64_t len, uint64_t ptr) {
+        std::string message = get_utf8_string(len, ptr);
+        printf("[log_utf8] VM_LOG: %s \n", message.c_str());
     }
 
 private:
@@ -77,6 +119,21 @@ private:
     std::vector<uint8_t> return_data_value;
 
 private:
+    std::string get_utf8_string(uint64_t len, uint64_t ptr) {
+        std::vector<uint8_t> buf;
+        if (len != UINT64_MAX) {
+            buf = memory_get_vec(ptr, len);
+        } else {
+            // todo
+        }
+
+        std::string res;
+        for (auto const & c : buf) {
+            res.push_back(c);
+        }
+        return res;
+    }
+
     void internal_write_register(uint64_t register_id, std::vector<uint8_t> const & context_input) {
         // printf("[internal_write_register]before write register size: %zu\n", m_registers.size());
         m_registers[register_id] = context_input;

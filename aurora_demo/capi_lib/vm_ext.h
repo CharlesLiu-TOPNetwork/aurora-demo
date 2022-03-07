@@ -19,15 +19,15 @@ public:
     std::vector<uint8_t> storage_get(std::vector<uint8_t> const & key) {
         printf("[debug][vm_ext][storage_get] size: %zu key:", key.size());
         for (auto _c : key) {
-            printf("%c", _c);
+            printf("%x", _c);
         }
         printf("\n");
         auto res = ext_kv_datas[key];
         printf("[debug][vm_ext][storage_get] size: %zu value:", res.size());
         for (auto _c : res) {
-            printf("%c", _c);
+            printf("%x", _c);
         }
-        printf("\n");
+        printf("\n==============\n");
 
         return res;
         return ext_kv_datas[key];
@@ -35,15 +35,19 @@ public:
     void storage_set(std::vector<uint8_t> const & key, std::vector<uint8_t> const & value) {
         printf("[debug][vm_ext][storage_set] size: %zu key:", key.size());
         for (auto _c : key) {
-            printf("%c", _c);
+            printf("%x", _c);
         }
         printf("\n");
         printf("[debug][vm_ext][storage_set] size: %zu value:", value.size());
         for (auto _c : value) {
-            printf("%c", _c);
+            printf("%x", _c);
         }
-        printf("\n");
+        printf("\n==============\n");
         ext_kv_datas[key] = value;
+    }
+
+    void storage_remove(std::vector<uint8_t> const & key){
+        ext_kv_datas.erase(key);
     }
 
 private:
