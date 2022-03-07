@@ -19,7 +19,8 @@ uint64_t register_len(uint64_t register_id) {
 // # Context API #
 // ###############
 void current_account_id(uint64_t register_id) {
-    return vl.current_account_id(register_id);
+    vl.current_account_id(register_id);
+    return;
 }
 void signer_account_id(uint64_t register_id) {
     return;
@@ -28,6 +29,7 @@ void signer_account_pk(uint64_t register_id) {
     return;
 }
 void predecessor_account_id(uint64_t register_id) {
+    vl.predecessor_account_id(register_id);
     return;
 }
 void input(uint64_t register_id) {
@@ -72,6 +74,7 @@ void sha256(uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
     return;
 }
 void keccak256(uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
+    vl.keccak256(value_len, value_ptr, register_id);
     return;
 }
 void ripemd160(uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {

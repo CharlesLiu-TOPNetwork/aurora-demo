@@ -11,5 +11,5 @@ cd ../test/
 rm -rf libcapi.a t
 cp ../capi_lib/libcapi.a .
 
-g++ main.cpp -o t -I . -L. libaurora_engine.so libcapi.a 
+g++ -g3 -ggdb -O0 main.cpp -o t -I . -L . -laurora_engine -lcapi
 ./t
