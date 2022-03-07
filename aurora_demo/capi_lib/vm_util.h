@@ -1,6 +1,7 @@
 #pragma once
 
 #include "assert.h"
+#include "ripemd160.h"
 #include "sh256.h"
 #include "stdint.h"
 
@@ -69,4 +70,16 @@ std::vector<uint8_t> get_sha256(std::vector<uint8_t> const & input) {
         res[index] = _res[index];
     }
     return res;
+}
+
+std::vector<uint8_t> get_ripemd160(std::vector<uint8_t> const & input) {
+    size_t msglen = input.size();
+    size_t hashlen = 20;
+
+    const uint8_t * msg = &input[0];
+    std::vector<uint8_t> hash(hashlen);
+    uint8_t * phash = &hash[0];
+
+    ripemd160_cal(msg, msglen, phash);
+    return hash;
 }

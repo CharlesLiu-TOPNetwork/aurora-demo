@@ -24,7 +24,7 @@ void current_account_id(uint64_t register_id) {
     return;
 }
 void signer_account_id(uint64_t register_id) {
-    assert(false);
+    vl.signer_account_id(register_id);
     return;
 }
 void signer_account_pk(uint64_t register_id) {
@@ -82,7 +82,7 @@ void random_seed(uint64_t register_id) {
     return;
 }
 void sha256(uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
-    assert(false);
+    vl.sha256(value_len, value_ptr, register_id);
     return;
 }
 void keccak256(uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
@@ -90,7 +90,7 @@ void keccak256(uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
     return;
 }
 void ripemd160(uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
-    assert(false);
+    vl.ripemd160(value_len, value_ptr, register_id);
     return;
 }
 uint64_t ecrecover(uint64_t hash_len, uint64_t hash_ptr, uint64_t sig_len, uint64_t sig_ptr, uint64_t v, uint64_t malleability_flag, uint64_t register_id) {

@@ -12,15 +12,15 @@
 class vm_logic {
 public:
     uint64_t register_len(uint64_t register_id) {
-        printf("size: %zu request: %lu \n", m_registers.size(), register_id);
+        printf("[debug][register_len] size: %zu request: %lu \n", m_registers.size(), register_id);
         return m_registers.at(register_id).size();
     }
 
     void read_register(uint64_t register_id, uint64_t ptr) {
         std::vector<uint8_t> data = internal_read_register(register_id);
-        // printf("[debug][read_register] read: ");
+        printf("[debug][read_register] request: %lu \n ", register_id);
         // for (auto const & _c : data) {
-        //     printf("\\0x%x ", _c);
+        //     printf("%c", _c);
         // }
         // printf("\n");
         // printf("debug %lu \n",ptr);
@@ -28,20 +28,29 @@ public:
     }
 
     void current_account_id(uint64_t register_id) {
+        printf("[debug][current_account_id] request: %lu \n", register_id);
         internal_write_register(register_id, m_context.account_id);
     }
 
     void predecessor_account_id(uint64_t register_id) {
+        printf("[debug][predecessor_account_id] request: %lu \n", register_id);
         internal_write_register(register_id, m_context.predecessor_account_id);
     }
 
+    void signer_account_id(uint64_t register_id) {
+        printf("[debug][signer_account_id] request: %lu\n", register_id);
+        internal_write_register(register_id, m_context.signer_account_id);
+    }
+
     void input(uint64_t register_id) {
+        printf("[debug][input] request: %lu\n", register_id);
         internal_write_register(register_id, m_context.input);
         return;
     }
 
     // storage:
     uint64_t storage_read(uint64_t key_len, uint64_t key_ptr, uint64_t register_id) {
+        printf("[debug][storage_read] request: %lu\n", register_id);
         std::vector<uint8_t> key = get_vec_from_memory_or_register(key_ptr, key_len);
         std::vector<uint8_t> read = m_ext.storage_get(key);
         if (!read.empty()) {
@@ -53,6 +62,7 @@ public:
     }
 
     uint64_t storage_write(uint64_t key_len, uint64_t key_ptr, uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
+        printf("[debug][storage_write] request: %lu\n", register_id);
         std::vector<uint8_t> key = get_vec_from_memory_or_register(key_ptr, key_len);
         std::vector<uint8_t> value = get_vec_from_memory_or_register(value_ptr, value_len);
 
@@ -69,6 +79,7 @@ public:
     }
 
     uint64_t storage_remove(uint64_t key_len, uint64_t key_ptr, uint64_t register_id) {
+        printf("[debug][storage_remove] request: %lu\n", register_id);
         std::vector<uint8_t> key = get_vec_from_memory_or_register(key_ptr, key_len);
         std::vector<uint8_t> read = m_ext.storage_get(key);
 
@@ -84,17 +95,31 @@ public:
     }
 
     void value_return(uint64_t key_len, uint64_t key_ptr) {
+        printf("[debug][value_return]\n");
         return_data_value = get_vec_from_memory_or_register(key_ptr, key_len);
     }
 
     void account_balance(uint64_t balance_ptr) {
+        printf("[debug][account_balance]\n");
         m_memory.write_memory(balance_ptr, to_le_bytes(current_account_balance));
     }
 
-    void keccak256(uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
+    void sha256(uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
         std::vector<uint8_t> value = get_vec_from_memory_or_register(value_ptr, value_len);
 
         auto value_hash = get_sha256(value);
+
+        internal_write_register(register_id, value_hash);
+    }
+
+    void keccak256(uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
+        sha256(value_len, value_ptr, register_id);
+    }
+
+    void ripemd160(uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
+        std::vector<uint8_t> value = get_vec_from_memory_or_register(value_ptr, value_len);
+
+        auto value_hash = get_ripemd160(value);
 
         internal_write_register(register_id, value_hash);
     }
@@ -137,14 +162,14 @@ private:
     void internal_write_register(uint64_t register_id, std::vector<uint8_t> const & context_input) {
         // printf("[internal_write_register]before write register size: %zu\n", m_registers.size());
         m_registers[register_id] = context_input;
-        printf("[internal_write_register]after write register size: %zu\n", m_registers.size());
-        for (auto const & _p : m_registers) {
-            printf("[debug][internal_write_register] after debug: %zu : ", _p.first);
-            for (auto const & _c : _p.second) {
-                printf("%x", _c);
-            }
-            printf("\n");
-        }
+        // printf("[internal_write_register]after write register size: %zu\n", m_registers.size());
+        // for (auto const & _p : m_registers) {
+            // printf("[debug][internal_write_register] after debug: %zu : ", _p.first);
+            // for (auto const & _c : _p.second) {
+            //     printf("%c", _c);
+            // }
+            // printf("\n");
+        // }
     }
 
     std::vector<uint8_t> get_vec_from_memory_or_register(uint64_t offset, uint64_t len) {
