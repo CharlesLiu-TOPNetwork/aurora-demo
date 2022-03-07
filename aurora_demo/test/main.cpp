@@ -8,5 +8,7 @@ int main() {
     // get_version();
     // deploy_erc20_token();
     deploy_code();
+    deploy_code();
+    // call
     return 0;
 }

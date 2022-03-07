@@ -12,15 +12,15 @@
 class vm_logic {
 public:
     uint64_t register_len(uint64_t register_id) {
-        printf("[debug][register_len] size: %zu request: %lu \n", m_registers.size(), register_id);
+        // printf("[debug][register_len] size: %zu request: %lu \n", m_registers.size(), register_id);
         return m_registers.at(register_id).size();
     }
 
     void read_register(uint64_t register_id, uint64_t ptr) {
         std::vector<uint8_t> data = internal_read_register(register_id);
-        printf("[debug][read_register] request: %lu \n ", register_id);
+        // printf("[debug][read_register] request: %lu \n ", register_id);
         // for (auto const & _c : data) {
-        //     printf("%c", _c);
+        //     printf("%x", _c);
         // }
         // printf("\n");
         // printf("debug %lu \n",ptr);
@@ -50,7 +50,7 @@ public:
 
     // storage:
     uint64_t storage_read(uint64_t key_len, uint64_t key_ptr, uint64_t register_id) {
-        printf("[debug][storage_read] request: %lu\n", register_id);
+        // printf("[debug][storage_read] request: %lu\n", register_id);
         std::vector<uint8_t> key = get_vec_from_memory_or_register(key_ptr, key_len);
         std::vector<uint8_t> read = m_ext.storage_get(key);
         if (!read.empty()) {
@@ -62,7 +62,7 @@ public:
     }
 
     uint64_t storage_write(uint64_t key_len, uint64_t key_ptr, uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
-        printf("[debug][storage_write] request: %lu\n", register_id);
+        // printf("[debug][storage_write] request: %lu\n", register_id);
         std::vector<uint8_t> key = get_vec_from_memory_or_register(key_ptr, key_len);
         std::vector<uint8_t> value = get_vec_from_memory_or_register(value_ptr, value_len);
 
@@ -79,7 +79,7 @@ public:
     }
 
     uint64_t storage_remove(uint64_t key_len, uint64_t key_ptr, uint64_t register_id) {
-        printf("[debug][storage_remove] request: %lu\n", register_id);
+        // printf("[debug][storage_remove] request: %lu\n", register_id);
         std::vector<uint8_t> key = get_vec_from_memory_or_register(key_ptr, key_len);
         std::vector<uint8_t> read = m_ext.storage_get(key);
 
@@ -166,7 +166,7 @@ private:
         // for (auto const & _p : m_registers) {
             // printf("[debug][internal_write_register] after debug: %zu : ", _p.first);
             // for (auto const & _c : _p.second) {
-            //     printf("%c", _c);
+            //     printf("%x", _c);
             // }
             // printf("\n");
         // }

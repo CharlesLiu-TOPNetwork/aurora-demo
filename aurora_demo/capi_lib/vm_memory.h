@@ -14,7 +14,7 @@ public:
         }
         // printf("[debug][vm_memory][read] result:");
         // for (auto _c : buffer) {
-        //     printf("%c",_c);
+        //     printf("%x",_c);
         // }
         // printf("\n");
     }
