@@ -10,6 +10,7 @@ int main() {
     // deploy_erc20_token();
     deploy_code();
     call();
+    call();
     // call
     return 0;
 }
