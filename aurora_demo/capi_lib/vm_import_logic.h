@@ -95,8 +95,17 @@ public:
     }
 
     void value_return(uint64_t key_len, uint64_t key_ptr) {
-        printf("[debug][value_return]\n");
         return_data_value = get_vec_from_memory_or_register(key_ptr, key_len);
+        printf("[debug][value_return] in hex: ");
+        for (auto const & _c : return_data_value) {
+            printf("%x", _c);
+        }
+        printf("\n");
+        printf("[debug][value_return] in chars: ");
+        for (auto const & _c : return_data_value) {
+            printf("%c", _c);
+        }
+        printf("\n");
     }
 
     void account_balance(uint64_t balance_ptr) {
@@ -164,11 +173,11 @@ private:
         m_registers[register_id] = context_input;
         // printf("[internal_write_register]after write register size: %zu\n", m_registers.size());
         // for (auto const & _p : m_registers) {
-            // printf("[debug][internal_write_register] after debug: %zu : ", _p.first);
-            // for (auto const & _c : _p.second) {
-            //     printf("%x", _c);
-            // }
-            // printf("\n");
+        // printf("[debug][internal_write_register] after debug: %zu : ", _p.first);
+        // for (auto const & _c : _p.second) {
+        //     printf("%x", _c);
+        // }
+        // printf("\n");
         // }
     }
 
