@@ -1,0 +1,22 @@
+[package]
+name = "engine-precompiles"
+version = "0.1.0"
+authors = []
+edition = "2021"
+description = ""
+documentation = ""
+readme = false
+homepage = ""
+repository = ""
+license = ""
+publish = false
+autobenches = false
+
+[dependencies]
+engine-types = { path = "../engine-types", default-features = false }
+engine-sdk = { path = "../engine-sdk", default-features = false }
+borsh = { version = "0.8.2", default-features = false }
+evm = { git = "https://github.com/aurora-is-near/sputnikvm.git", rev = "f4ee520254856898d451c7225851520a35c97cea", default-features = false }
+evm-core = { git = "https://github.com/aurora-is-near/sputnikvm.git", rev = "f4ee520254856898d451c7225851520a35c97cea", default-features = false }
+libsecp256k1 = { version = "0.3.5", default-features = false }
+sha3 = { version = "0.9.1", default-features = false }
