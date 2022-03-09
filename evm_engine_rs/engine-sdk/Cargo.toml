@@ -11,3 +11,7 @@ repository = ""
 license = ""
 publish = false
 autobenches = false
+
+[dependencies]
+engine-types = { path = "../engine-types", default-features = false }
+borsh = { version = "0.8.2", default-features = false }
