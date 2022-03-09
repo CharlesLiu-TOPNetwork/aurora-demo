@@ -1,6 +1,8 @@
 [workspace]
 members = [
     "evm_engine_rs/engine",
+    "evm_engine_rs/engine-precompiles",
     "evm_engine_rs/engine-sdk",
+    "evm_engine_rs/engine-transactions",
     "evm_engine_rs/engine-types",
 ]
