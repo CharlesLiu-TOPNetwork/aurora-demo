@@ -18,3 +18,6 @@ engine-precompiles = { path = "../engine-precompiles", default-features = false 
 engine-sdk = { path = "../engine-sdk", default-features = false }
 evm = { git = "https://github.com/aurora-is-near/sputnikvm.git", rev = "f4ee520254856898d451c7225851520a35c97cea", default-features = false }
 rlp = { version = "0.5.0", default-features = false }
+
+[features]
+std = ["engine-types/std", "engine-precompiles/std", "engine-sdk/std", "evm/std", "rlp/std"]
