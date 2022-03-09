@@ -1,5 +1,6 @@
 use crate::error;
 use borsh::{BorshDeserialize, BorshSerialize};
+use engine_types::U256;
 
 /// The purpose of this trait is to represent a reference to a value that
 /// could be obtained by IO, but without eagerly loading it into memory.
@@ -93,37 +94,37 @@ pub trait IO {
     //     self.write_storage_direct(key, value);
     // }
 
-    // /// Convenience function to read a 64-bit unsigned integer from storage
-    // /// (assumes little-endian encoding).
-    // fn read_u64(&self, key: &[u8]) -> Result<u64, error::ReadU64Error> {
-    //     let value = self
-    //         .read_storage(key)
-    //         .ok_or(error::ReadU64Error::MissingValue)?;
+    /// Convenience function to read a 64-bit unsigned integer from storage
+    /// (assumes little-endian encoding).
+    fn read_u64(&self, key: &[u8]) -> Result<u64, error::ReadU64Error> {
+        let value = self
+            .read_storage(key)
+            .ok_or(error::ReadU64Error::MissingValue)?;
 
-    //     if value.len() != 8 {
-    //         return Err(error::ReadU64Error::InvalidU64);
-    //     }
+        if value.len() != 8 {
+            return Err(error::ReadU64Error::InvalidU64);
+        }
 
-    //     let mut result = [0u8; 8];
-    //     value.copy_to_slice(&mut result);
-    //     Ok(u64::from_le_bytes(result))
-    // }
+        let mut result = [0u8; 8];
+        value.copy_to_slice(&mut result);
+        Ok(u64::from_le_bytes(result))
+    }
 
-    // /// Convenience function to read a 256-bit unsigned integer from storage
-    // /// (assumes big-endian encoding).
-    // fn read_u256(&self, key: &[u8]) -> Result<U256, error::ReadU256Error> {
-    //     let value = self
-    //         .read_storage(key)
-    //         .ok_or(error::ReadU256Error::MissingValue)?;
+    /// Convenience function to read a 256-bit unsigned integer from storage
+    /// (assumes big-endian encoding).
+    fn read_u256(&self, key: &[u8]) -> Result<U256, error::ReadU256Error> {
+        let value = self
+            .read_storage(key)
+            .ok_or(error::ReadU256Error::MissingValue)?;
 
-    //     if value.len() != 32 {
-    //         return Err(error::ReadU256Error::InvalidU256);
-    //     }
+        if value.len() != 32 {
+            return Err(error::ReadU256Error::InvalidU256);
+        }
 
-    //     let mut result = [0u8; 32];
-    //     value.copy_to_slice(&mut result);
-    //     Ok(U256::from_big_endian(&result))
-    // }
+        let mut result = [0u8; 32];
+        value.copy_to_slice(&mut result);
+        Ok(U256::from_big_endian(&result))
+    }
 
     // fn write_borsh<T: BorshSerialize>(
     //     &mut self,

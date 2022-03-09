@@ -13,3 +13,21 @@ pub mod types;
 
 use runtime::exports;
 pub use types::keccak;
+
+pub fn log_utf8(bytes: &[u8]) {
+    unsafe {
+        exports::log_utf8(bytes.len() as u64, bytes.as_ptr() as u64);
+    }
+}
+
+pub fn log(data: &str) {
+    log_utf8(data.as_bytes())
+}
+
+#[macro_export]
+macro_rules! log {
+    ($e: expr) => {
+        #[cfg(feature = "log")]
+        $crate::log($e)
+    };
+}
