@@ -1,5 +1,5 @@
 .vscode
-/tmp
+tmp
 
 # from demo tmp files: 
 *.a
@@ -7,4 +7,4 @@
 
 
 # top_evm_runtime:
-target/*
+target

@@ -14,3 +14,8 @@ autobenches = false
 
 [dependencies]
 borsh = { version = "0.8.2", default-features = false }
+primitive-types = { version = "0.10.0", default-features = false, features = ["rlp"] }
+
+[features]
+default = ["std"]
+std = ["primitive-types/std"]
