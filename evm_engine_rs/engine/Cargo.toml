@@ -14,3 +14,15 @@ autobenches = false
 
 [lib]
 crate_type = ["cdylib", "rlib"]
+
+[dependencies]
+engine-types = { path = "../engine-types", default-features = false }
+engine-sdk = { path = "../engine-sdk", default-features = false }
+engine-precompiles = { path = "../engine-precompiles", default-features = false }
+engine-transactions = { path = "../engine-transactions", default-features = false }
+borsh = { version = "0.8.2", default-features = false }
+
+
+[features]
+default = ["std"]
+std = ["engine-types/std","engine-sdk/std","engine-precompiles/std","engine-transactions/std"]
