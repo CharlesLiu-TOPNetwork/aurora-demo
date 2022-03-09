@@ -1,10 +1,10 @@
-use crate::prelude::types::{Address, EthGas};
-use crate::prelude::{sdk, vec, Borrowed, H256};
 use crate::{EvmPrecompileResult, Precompile, PrecompileOutput};
+use engine_types::{vec, Borrowed, H256, types::Address, types::EthGas};
+use engine_sdk as sdk;
 use evm::{Context, ExitError};
 
 mod costs {
-    use crate::prelude::types::EthGas;
+    use engine_types::types::EthGas;
 
     pub(super) const ECRECOVER_BASE: EthGas = EthGas::new(3_000);
 }

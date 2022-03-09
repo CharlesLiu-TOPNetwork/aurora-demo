@@ -1,29 +1,28 @@
 #![allow(unused)]
-#![allow(dead_code)]
-#![cfg_attr(not(feature = "std"), no_std)]
-#![cfg_attr(not(feature = "std"), feature(alloc_error_handler))]
-#![cfg_attr(feature = "log", feature(panic_info_message))]
+// #![allow(dead_code)]
+// #![cfg_attr(not(feature = "std"), no_std)]
+// #![cfg_attr(not(feature = "std"), feature(alloc_error_handler))]
+// #![cfg_attr(feature = "log", feature(panic_info_message))]
 
-// pub mod blake2;
+pub mod blake2;
 // pub mod bn128;
 // pub mod hash;
 // pub mod identity;
 // pub mod modexp;
 // pub mod native;
-mod prelude;
 // pub mod random;
 pub mod secp256k1;
 // #[cfg(test)]
 // mod utils;
 
-// use crate::blake2::Blake2F;
+use crate::blake2::Blake2F;
 // use crate::bn128::{Bn128Add, Bn128Mul, Bn128Pair};
 // use crate::hash::{RIPEMD160, SHA256};
 // use crate::identity::Identity;
 // use crate::modexp::ModExp;
 // use crate::native::{ExitToEthereum, ExitToNear};
-use crate::prelude::types::EthGas;
-use crate::prelude::{Vec, H160, H256};
+use engine_types::types::EthGas;
+use engine_types::{Vec, H160, H256};
 // use crate::random::RandomSeed;
 use crate::secp256k1::ECRecover;
 use engine_types::{account_id::AccountId, types::Address, vec, BTreeMap, Box};
@@ -262,10 +261,10 @@ pub trait Precompile {
 /// fn for making an address by concatenating the bytes from two given numbers,
 /// Note that 32 + 128 = 160 = 20 bytes (the length of an address). This function is used
 /// as a convenience for specifying the addresses of the various precompiles.
-pub const fn make_address(x: u32, y: u128) -> prelude::types::Address {
+pub const fn make_address(x: u32, y: u128) -> Address {
     let x_bytes = x.to_be_bytes();
     let y_bytes = y.to_be_bytes();
-    prelude::types::Address::new(H160([
+    Address::new(H160([
         x_bytes[0],
         x_bytes[1],
         x_bytes[2],
@@ -289,10 +288,10 @@ pub const fn make_address(x: u32, y: u128) -> prelude::types::Address {
     ]))
 }
 
-const fn make_h256(x: u128, y: u128) -> prelude::H256 {
+const fn make_h256(x: u128, y: u128) -> H256 {
     let x_bytes = x.to_be_bytes();
     let y_bytes = y.to_be_bytes();
-    prelude::H256([
+    H256([
         x_bytes[0],
         x_bytes[1],
         x_bytes[2],
