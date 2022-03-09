@@ -5,30 +5,24 @@
 // #![cfg_attr(feature = "log", feature(panic_info_message))]
 
 pub mod blake2;
-// pub mod bn128;
-// pub mod hash;
-// pub mod identity;
-// pub mod modexp;
+pub mod bn128;
+pub mod hash;
+pub mod identity;
+pub mod modexp;
 // pub mod native;
 // pub mod random;
 pub mod secp256k1;
-// #[cfg(test)]
-// mod utils;
 
 use crate::blake2::Blake2F;
-// use crate::bn128::{Bn128Add, Bn128Mul, Bn128Pair};
-// use crate::hash::{RIPEMD160, SHA256};
-// use crate::identity::Identity;
-// use crate::modexp::ModExp;
+use crate::bn128::{Bn128Add, Bn128Mul, Bn128Pair};
+use crate::hash::{RIPEMD160, SHA256};
+use crate::identity::Identity;
+use crate::modexp::ModExp;
 // use crate::native::{ExitToEthereum, ExitToNear};
-use engine_types::types::EthGas;
-use engine_types::{Vec, H160, H256};
 // use crate::random::RandomSeed;
 use crate::secp256k1::ECRecover;
-use engine_types::{account_id::AccountId, types::Address, vec, BTreeMap, Box};
-use evm::backend::Log;
-use evm::executor;
-use evm::{Context, ExitError, ExitSucceed};
+use engine_types::{account_id::AccountId, types::Address, vec, BTreeMap, Box, Vec, H160, H256, types::EthGas};
+use evm::{executor, Context, ExitError, ExitSucceed, backend::Log};
 
 #[derive(Debug, Default)]
 pub struct PrecompileOutput {
@@ -77,28 +71,28 @@ pub trait Precompile {
     ) -> EvmPrecompileResult;
 }
 
-// /// Hard fork marker.
-// pub trait HardFork {}
+/// Hard fork marker.
+pub trait HardFork {}
 
-// /// Homestead hard fork marker.
-// pub struct Homestead;
+/// Homestead hard fork marker.
+pub struct Homestead;
 
-// /// Homestead hard fork marker.
-// pub struct Byzantium;
+/// Homestead hard fork marker.
+pub struct Byzantium;
 
-// /// Homestead hard fork marker.
-// pub struct Istanbul;
+/// Homestead hard fork marker.
+pub struct Istanbul;
 
-// /// Homestead hard fork marker.
-// pub struct Berlin;
+/// Homestead hard fork marker.
+pub struct Berlin;
 
-// impl HardFork for Homestead {}
+impl HardFork for Homestead {}
 
-// impl HardFork for Byzantium {}
+impl HardFork for Byzantium {}
 
-// impl HardFork for Istanbul {}
+impl HardFork for Istanbul {}
 
-// impl HardFork for Berlin {}
+impl HardFork for Berlin {}
 
 // pub struct Precompiles(pub prelude::BTreeMap<Address, Box<dyn Precompile>>);
 

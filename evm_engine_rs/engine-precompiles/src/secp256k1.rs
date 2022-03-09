@@ -19,7 +19,7 @@ pub fn ecrecover(hash: H256, signature: &[u8]) -> Result<Address, ExitError> {
 
     unreachable!();
 
-    // #[cfg(not(feature = "contract"))]
+    // TODO: implenment SDK
     // return sdk::ecrecover(hash, signature).map_err(|e| ExitError::Other(Borrowed(e.as_str())));
     
     #[cfg(feature = "contract")]
