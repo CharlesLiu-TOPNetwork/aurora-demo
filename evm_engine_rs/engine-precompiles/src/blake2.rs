@@ -1,6 +1,6 @@
 use crate::{EvmPrecompileResult, Precompile, PrecompileOutput};
-use engine_types::{mem, Borrowed, types::Address, types::EthGas};
 use engine_sdk as sdk;
+use engine_types::{mem, Borrowed, types::Address, types::EthGas};
 use evm::{Context, ExitError};
 
 /// Blake2 costs.
