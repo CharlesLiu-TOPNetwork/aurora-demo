@@ -21,6 +21,8 @@ engine-sdk = { path = "../engine-sdk", default-features = false }
 engine-precompiles = { path = "../engine-precompiles", default-features = false }
 engine-transactions = { path = "../engine-transactions", default-features = false }
 borsh = { version = "0.8.2", default-features = false }
+evm = { git = "https://github.com/aurora-is-near/sputnikvm.git", rev = "f4ee520254856898d451c7225851520a35c97cea", default-features = false }
+evm-core = { git = "https://github.com/aurora-is-near/sputnikvm.git", rev = "f4ee520254856898d451c7225851520a35c97cea", default-features = false }
 
 
 [features]

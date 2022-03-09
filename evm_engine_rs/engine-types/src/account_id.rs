@@ -1,8 +1,11 @@
 #![allow(unused)]
 
 use crate::{fmt, str, str::FromStr};
+use borsh::{BorshDeserialize, BorshSerialize};
 
-#[derive(Debug, Default, Hash, Clone)]
+#[derive(
+    Debug, Default, Hash, Clone, BorshSerialize, BorshDeserialize, PartialEq, Eq, PartialOrd, Ord,
+)]
 pub struct AccountId(Box<str>);
 
 impl AccountId {
