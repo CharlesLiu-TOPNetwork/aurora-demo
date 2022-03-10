@@ -182,6 +182,61 @@ impl<'env, I: IO + Copy, E: Env> Engine<'env, I, E> {
 
         Ok(SubmitResult::new(status, used_gas, logs))
     }
+
+    pub fn call_with_args(&mut self, args: CallArgs) -> EngineResult<SubmitResult> {
+        let origin = Address::new(self.origin());
+        match args {
+            CallArgs::V2(call_args) => {
+                let contract = call_args.contract;
+                let value = call_args.value.into();
+                let input = call_args.input;
+                self.call(&origin, &contract, value, input, u64::MAX, Vec::new())
+            }
+        }
+    }
+
+    pub fn call(
+        &mut self,
+        origin: &Address,
+        contract: &Address,
+        value: Wei,
+        input: Vec<u8>,
+        gas_limit: u64,
+        access_list: Vec<(H160, Vec<H256>)>, // See EIP-2930
+    ) -> EngineResult<SubmitResult> {
+        let executor_params = StackExecutorParams::new(
+            gas_limit,
+            self.current_account_id.clone(),
+            self.env.random_seed(),
+        );
+        let mut executor = executor_params.make_executor(self);
+        let (exit_reason, result) = executor.transact_call(
+            origin.raw(),
+            contract.raw(),
+            value.raw(),
+            input,
+            gas_limit,
+            access_list,
+        );
+
+        let used_gas = executor.used_gas();
+        let status = match exit_reason.into_result(result) {
+            Ok(status) => status,
+            Err(e) => {
+                increment_nonce(&mut self.io, origin);
+                return Err(e.with_gas_used(used_gas));
+            }
+        };
+
+        let (values, logs) = executor.into_state().deconstruct();
+        let logs = logs.into_iter().map(|log| log.into()).collect();
+
+        // There is no way to return the logs to the NEAR log method as it only
+        // allows a return of UTF-8 strings.
+        self.apply(values, Vec::<Log>::new(), true);
+
+        Ok(SubmitResult::new(status, used_gas, logs))
+    }
 }
 
 // pub fn compute_block_hash(chain_id: [u8; 32], block_height: u64, account_id: &[u8]) -> H256 {
