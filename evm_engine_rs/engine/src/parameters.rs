@@ -45,6 +45,8 @@ pub enum TransactionStatus {
     Succeed(Vec<u8>),
     Revert(Vec<u8>),
     OutOfGas,
+    OutOfFund,
+    OutOfOffset,
 }
 
 impl TransactionStatus {
@@ -58,6 +60,8 @@ impl TransactionStatus {
 
     pub fn is_fail(&self) -> bool {
         *self == TransactionStatus::OutOfGas
+            || *self == TransactionStatus::OutOfFund
+            || *self == TransactionStatus::OutOfOffset
     }
 }
 
@@ -67,6 +71,8 @@ impl AsRef<[u8]> for TransactionStatus {
             Self::Succeed(_) => b"SUCCESS",
             Self::Revert(_) => b"ERR_REVERT",
             Self::OutOfGas => b"ERR_OUT_OF_GAS",
+            Self::OutOfFund => b"ERR_OUT_OF_FUNDS",
+            Self::OutOfOffset => b"ERR_OUT_OF_OFFSET",
         }
     }
 }

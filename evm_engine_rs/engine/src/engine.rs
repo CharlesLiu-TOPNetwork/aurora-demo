@@ -1,12 +1,67 @@
 #![allow(unused)]
-use crate::error::{BalanceOverflow, EngineErrorKind, EngineStateError};
-use crate::parameters::NewCallArgs;
+use crate::error::{BalanceOverflow, EngineError, EngineErrorKind, EngineStateError};
+use crate::parameters::{NewCallArgs, ResultLog, SubmitResult, TransactionStatus};
 use crate::prelude::*;
 use core::cell::RefCell;
+use engine_precompiles::{Precompile, PrecompileConstructorContext, Precompiles};
 use engine_sdk::dup_cache::{DupCache, PairDupCache};
 use engine_sdk::env::Env;
 use engine_sdk::io::{StorageIntermediate, IO};
-use evm::backend::{Apply, ApplyBackend, Basic, Log};
+use evm::backend::{Apply, ApplyBackend, Backend, Basic, Log};
+use evm::{executor, Config, CreateScheme, ExitError, ExitReason};
+
+pub(crate) const CONFIG: &Config = &Config::london();
+
+struct StackExecutorParams {
+    precompiles: Precompiles,
+    gas_limit: u64,
+}
+
+impl StackExecutorParams {
+    fn new(gas_limit: u64, current_account_id: AccountId, random_seed: H256) -> Self {
+        Self {
+            precompiles: Precompiles::new_london(PrecompileConstructorContext {
+                current_account_id,
+                random_seed,
+            }),
+            gas_limit,
+        }
+    }
+
+    fn make_executor<'a, 'env, I: IO + Copy, E: Env>(
+        &'a self,
+        engine: &'a Engine<'env, I, E>,
+    ) -> executor::stack::StackExecutor<
+        'static,
+        'a,
+        executor::stack::MemoryStackState<Engine<'env, I, E>>,
+        Precompiles,
+    > {
+        let metadata = executor::stack::StackSubstateMetadata::new(self.gas_limit, CONFIG);
+        let state = executor::stack::MemoryStackState::new(metadata, engine);
+        executor::stack::StackExecutor::new_with_precompiles(state, CONFIG, &self.precompiles)
+    }
+}
+
+trait ExitIntoResult {
+    /// Checks if the EVM exit is ok or an error.
+    fn into_result(self, data: Vec<u8>) -> Result<TransactionStatus, EngineErrorKind>;
+}
+
+impl ExitIntoResult for ExitReason {
+    fn into_result(self, data: Vec<u8>) -> Result<TransactionStatus, EngineErrorKind> {
+        use ExitReason::*;
+        match self {
+            Succeed(_) => Ok(TransactionStatus::Succeed(data)),
+            Revert(_) => Ok(TransactionStatus::Revert(data)),
+            Error(ExitError::OutOfOffset) => Ok(TransactionStatus::OutOfOffset),
+            Error(ExitError::OutOfFund) => Ok(TransactionStatus::OutOfFund),
+            Error(ExitError::OutOfGas) => Ok(TransactionStatus::OutOfGas),
+            Error(e) => Err(e.into()),
+            Fatal(e) => Err(e.into()),
+        }
+    }
+}
 
 #[derive(BorshSerialize, BorshDeserialize, Default, Clone)]
 pub struct EngineState {
@@ -47,6 +102,8 @@ pub struct Engine<'env, I: IO, E: Env> {
 
 const STATE_KEY: &[u8; 5] = b"STATE";
 
+pub type EngineResult<T> = Result<T, EngineError>;
+
 impl<'env, I: IO + Copy, E: Env> Engine<'env, I, E> {
     pub fn new(
         origin: Address,
@@ -75,6 +132,55 @@ impl<'env, I: IO + Copy, E: Env> Engine<'env, I, E> {
             account_info_cache: RefCell::new(DupCache::default()),
             contract_storage_cache: RefCell::new(PairDupCache::default()),
         }
+    }
+
+    pub fn deploy_code_with_input(&mut self, input: Vec<u8>) -> EngineResult<SubmitResult> {
+        let origin = Address::new(self.origin());
+        let value = Wei::zero();
+        self.deploy_code(origin, value, input, u64::MAX, Vec::new())
+    }
+
+    pub fn deploy_code(
+        &mut self,
+        origin: Address,
+        value: Wei,
+        input: Vec<u8>,
+        gas_limit: u64,
+        access_list: Vec<(H160, Vec<H256>)>, // See EIP-2930
+    ) -> EngineResult<SubmitResult> {
+        let executor_params = StackExecutorParams::new(
+            gas_limit,
+            self.current_account_id.clone(),
+            self.env.random_seed(),
+        );
+        let mut executor = executor_params.make_executor(self);
+        let address = executor.create_address(CreateScheme::Legacy {
+            caller: origin.raw(),
+        });
+        let (exit_reason, return_value) =
+            executor.transact_create(origin.raw(), value.raw(), input, gas_limit, access_list);
+        let result = if exit_reason.is_succeed() {
+            address.0.to_vec()
+        } else {
+            return_value
+        };
+
+        let used_gas = executor.used_gas();
+        let status = match exit_reason.into_result(result) {
+            Ok(status) => status,
+            Err(e) => {
+                increment_nonce(&mut self.io, &origin);
+                return Err(e.with_gas_used(used_gas));
+            }
+        };
+
+        let (values, logs) = executor.into_state().deconstruct();
+
+        let logs = logs.into_iter().map(|log| log.into()).collect();
+
+        self.apply(values, Vec::<Log>::new(), true);
+
+        Ok(SubmitResult::new(status, used_gas, logs))
     }
 }
 
