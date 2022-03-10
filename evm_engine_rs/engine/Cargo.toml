@@ -11,6 +11,7 @@ repository = ""
 license = ""
 publish = false
 autobenches = false
+build = "../build.rs"
 
 [lib]
 crate_type = ["rlib", "staticlib"]
@@ -28,3 +29,4 @@ evm-core = { git = "https://github.com/aurora-is-near/sputnikvm.git", rev = "f4e
 [features]
 default = ["std"]
 std = ["engine-types/std","engine-sdk/std","engine-precompiles/std","engine-transactions/std"]
+build_as_xtop_lib = []
