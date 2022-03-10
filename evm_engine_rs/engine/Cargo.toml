@@ -24,7 +24,9 @@ engine-transactions = { path = "../engine-transactions", default-features = fals
 borsh = { version = "0.8.2", default-features = false }
 evm = { git = "https://github.com/aurora-is-near/sputnikvm.git", rev = "f4ee520254856898d451c7225851520a35c97cea", default-features = false }
 evm-core = { git = "https://github.com/aurora-is-near/sputnikvm.git", rev = "f4ee520254856898d451c7225851520a35c97cea", default-features = false }
-
+ethabi = { git = "https://github.com/darwinia-network/ethabi", branch = "xavier-no-std", default-features = false }
+sha3 = { version = "0.9.1", default-features = false }
+hex = { version = "0.4", default-features = false }
 
 [features]
 default = ["std"]
