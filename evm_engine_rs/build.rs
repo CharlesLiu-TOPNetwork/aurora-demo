@@ -17,6 +17,7 @@ fn main() {
     // to :|-  evm_engine_rs/debug/...
     //     |-  lib/linux/*.a
     Command::new("cp")
+        .arg("-f")
         .arg(&format!(
             "{}/../../../../../lib/Linux/libxtop_mock_api.a",
             out_dir
