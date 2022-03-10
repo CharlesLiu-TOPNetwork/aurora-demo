@@ -94,163 +94,163 @@ impl HardFork for Istanbul {}
 
 impl HardFork for Berlin {}
 
-// pub struct Precompiles(pub prelude::BTreeMap<Address, Box<dyn Precompile>>);
+pub struct Precompiles(pub BTreeMap<Address, Box<dyn Precompile>>);
 
-// impl executor::stack::PrecompileSet for Precompiles {
-//     fn execute(
-//         &self,
-//         address: prelude::H160,
-//         input: &[u8],
-//         gas_limit: Option<u64>,
-//         context: &Context,
-//         is_static: bool,
-//     ) -> Option<Result<executor::stack::PrecompileOutput, executor::stack::PrecompileFailure>> {
-//         self.0.get(&Address::new(address)).map(|p| {
-//             p.run(input, gas_limit.map(EthGas::new), context, is_static)
-//                 .map_err(|exit_status| executor::stack::PrecompileFailure::Error { exit_status })
-//         })
-//     }
+impl executor::stack::PrecompileSet for Precompiles {
+    fn execute(
+        &self,
+        address: H160,
+        input: &[u8],
+        gas_limit: Option<u64>,
+        context: &Context,
+        is_static: bool,
+    ) -> Option<Result<executor::stack::PrecompileOutput, executor::stack::PrecompileFailure>> {
+        self.0.get(&Address::new(address)).map(|p| {
+            p.run(input, gas_limit.map(EthGas::new), context, is_static)
+                .map_err(|exit_status| executor::stack::PrecompileFailure::Error { exit_status })
+        })
+    }
 
-//     fn is_precompile(&self, address: prelude::H160) -> bool {
-//         self.0.contains_key(&Address::new(address))
-//     }
-// }
+    fn is_precompile(&self, address: H160) -> bool {
+        self.0.contains_key(&Address::new(address))
+    }
+}
 
-// pub struct PrecompileConstructorContext {
-//     pub current_account_id: AccountId,
-//     pub random_seed: H256,
-// }
+pub struct PrecompileConstructorContext {
+    pub current_account_id: AccountId,
+    pub random_seed: H256,
+}
 
-// impl Precompiles {
-//     #[allow(dead_code)]
-//     pub fn new_homestead(ctx: PrecompileConstructorContext) -> Self {
-//         let addresses = vec![
-//             ECRecover::ADDRESS,
-//             SHA256::ADDRESS,
-//             RIPEMD160::ADDRESS,
-//             ExitToNear::ADDRESS,
-//             ExitToEthereum::ADDRESS,
-//             RandomSeed::ADDRESS,
-//         ];
-//         let fun: prelude::Vec<Box<dyn Precompile>> = vec![
-//             Box::new(ECRecover),
-//             Box::new(SHA256),
-//             Box::new(RIPEMD160),
-//             Box::new(ExitToNear::new(ctx.current_account_id.clone())),
-//             Box::new(ExitToEthereum::new(ctx.current_account_id)),
-//             Box::new(RandomSeed::new(ctx.random_seed)),
-//         ];
-//         let map: BTreeMap<Address, Box<dyn Precompile>> = addresses.into_iter().zip(fun).collect();
+impl Precompiles {
+    #[allow(dead_code)]
+    pub fn new_homestead(ctx: PrecompileConstructorContext) -> Self {
+        let addresses = vec![
+            ECRecover::ADDRESS,
+            SHA256::ADDRESS,
+            RIPEMD160::ADDRESS,
+            // ExitToNear::ADDRESS,
+            // ExitToEthereum::ADDRESS,
+            // RandomSeed::ADDRESS,
+        ];
+        let fun: Vec<Box<dyn Precompile>> = vec![
+            Box::new(ECRecover),
+            Box::new(SHA256),
+            Box::new(RIPEMD160),
+            // Box::new(ExitToNear::new(ctx.current_account_id.clone())),
+            // Box::new(ExitToEthereum::new(ctx.current_account_id)),
+            // Box::new(RandomSeed::new(ctx.random_seed)),
+        ];
+        let map: BTreeMap<Address, Box<dyn Precompile>> = addresses.into_iter().zip(fun).collect();
 
-//         Precompiles(map)
-//     }
+        Precompiles(map)
+    }
 
-//     #[allow(dead_code)]
-//     pub fn new_byzantium(ctx: PrecompileConstructorContext) -> Self {
-//         let addresses = vec![
-//             ECRecover::ADDRESS,
-//             SHA256::ADDRESS,
-//             RIPEMD160::ADDRESS,
-//             Identity::ADDRESS,
-//             ModExp::<Byzantium>::ADDRESS,
-//             Bn128Add::<Byzantium>::ADDRESS,
-//             Bn128Mul::<Byzantium>::ADDRESS,
-//             Bn128Pair::<Byzantium>::ADDRESS,
-//             ExitToNear::ADDRESS,
-//             ExitToEthereum::ADDRESS,
-//             RandomSeed::ADDRESS,
-//         ];
-//         let fun: prelude::Vec<Box<dyn Precompile>> = vec![
-//             Box::new(ECRecover),
-//             Box::new(SHA256),
-//             Box::new(RIPEMD160),
-//             Box::new(Identity),
-//             Box::new(ModExp::<Byzantium>::new()),
-//             Box::new(Bn128Add::<Byzantium>::new()),
-//             Box::new(Bn128Mul::<Byzantium>::new()),
-//             Box::new(Bn128Pair::<Byzantium>::new()),
-//             Box::new(ExitToNear::new(ctx.current_account_id.clone())),
-//             Box::new(ExitToEthereum::new(ctx.current_account_id)),
-//             Box::new(RandomSeed::new(ctx.random_seed)),
-//         ];
-//         let map: BTreeMap<Address, Box<dyn Precompile>> = addresses.into_iter().zip(fun).collect();
+    #[allow(dead_code)]
+    pub fn new_byzantium(ctx: PrecompileConstructorContext) -> Self {
+        let addresses = vec![
+            ECRecover::ADDRESS,
+            SHA256::ADDRESS,
+            RIPEMD160::ADDRESS,
+            Identity::ADDRESS,
+            ModExp::<Byzantium>::ADDRESS,
+            Bn128Add::<Byzantium>::ADDRESS,
+            Bn128Mul::<Byzantium>::ADDRESS,
+            Bn128Pair::<Byzantium>::ADDRESS,
+            // ExitToNear::ADDRESS,
+            // ExitToEthereum::ADDRESS,
+            // RandomSeed::ADDRESS,
+        ];
+        let fun: Vec<Box<dyn Precompile>> = vec![
+            Box::new(ECRecover),
+            Box::new(SHA256),
+            Box::new(RIPEMD160),
+            Box::new(Identity),
+            Box::new(ModExp::<Byzantium>::new()),
+            Box::new(Bn128Add::<Byzantium>::new()),
+            Box::new(Bn128Mul::<Byzantium>::new()),
+            Box::new(Bn128Pair::<Byzantium>::new()),
+            // Box::new(ExitToNear::new(ctx.current_account_id.clone())),
+            // Box::new(ExitToEthereum::new(ctx.current_account_id)),
+            // Box::new(RandomSeed::new(ctx.random_seed)),
+        ];
+        let map: BTreeMap<Address, Box<dyn Precompile>> = addresses.into_iter().zip(fun).collect();
 
-//         Precompiles(map)
-//     }
+        Precompiles(map)
+    }
 
-//     pub fn new_istanbul(ctx: PrecompileConstructorContext) -> Self {
-//         let addresses = vec![
-//             ECRecover::ADDRESS,
-//             SHA256::ADDRESS,
-//             RIPEMD160::ADDRESS,
-//             Identity::ADDRESS,
-//             ModExp::<Byzantium>::ADDRESS,
-//             Bn128Add::<Istanbul>::ADDRESS,
-//             Bn128Mul::<Istanbul>::ADDRESS,
-//             Bn128Pair::<Istanbul>::ADDRESS,
-//             Blake2F::ADDRESS,
-//             ExitToNear::ADDRESS,
-//             ExitToEthereum::ADDRESS,
-//             RandomSeed::ADDRESS,
-//         ];
-//         let fun: prelude::Vec<Box<dyn Precompile>> = vec![
-//             Box::new(ECRecover),
-//             Box::new(SHA256),
-//             Box::new(RIPEMD160),
-//             Box::new(Identity),
-//             Box::new(ModExp::<Byzantium>::new()),
-//             Box::new(Bn128Add::<Istanbul>::new()),
-//             Box::new(Bn128Mul::<Istanbul>::new()),
-//             Box::new(Bn128Pair::<Istanbul>::new()),
-//             Box::new(Blake2F),
-//             Box::new(ExitToNear::new(ctx.current_account_id.clone())),
-//             Box::new(ExitToEthereum::new(ctx.current_account_id)),
-//             Box::new(RandomSeed::new(ctx.random_seed)),
-//         ];
-//         let map: BTreeMap<Address, Box<dyn Precompile>> = addresses.into_iter().zip(fun).collect();
+    pub fn new_istanbul(ctx: PrecompileConstructorContext) -> Self {
+        let addresses = vec![
+            ECRecover::ADDRESS,
+            SHA256::ADDRESS,
+            RIPEMD160::ADDRESS,
+            Identity::ADDRESS,
+            ModExp::<Byzantium>::ADDRESS,
+            Bn128Add::<Istanbul>::ADDRESS,
+            Bn128Mul::<Istanbul>::ADDRESS,
+            Bn128Pair::<Istanbul>::ADDRESS,
+            Blake2F::ADDRESS,
+            // ExitToNear::ADDRESS,
+            // ExitToEthereum::ADDRESS,
+            // RandomSeed::ADDRESS,
+        ];
+        let fun: Vec<Box<dyn Precompile>> = vec![
+            Box::new(ECRecover),
+            Box::new(SHA256),
+            Box::new(RIPEMD160),
+            Box::new(Identity),
+            Box::new(ModExp::<Byzantium>::new()),
+            Box::new(Bn128Add::<Istanbul>::new()),
+            Box::new(Bn128Mul::<Istanbul>::new()),
+            Box::new(Bn128Pair::<Istanbul>::new()),
+            Box::new(Blake2F),
+            // Box::new(ExitToNear::new(ctx.current_account_id.clone())),
+            // Box::new(ExitToEthereum::new(ctx.current_account_id)),
+            // Box::new(RandomSeed::new(ctx.random_seed)),
+        ];
+        let map: BTreeMap<Address, Box<dyn Precompile>> = addresses.into_iter().zip(fun).collect();
 
-//         Precompiles(map)
-//     }
+        Precompiles(map)
+    }
 
-//     pub fn new_berlin(ctx: PrecompileConstructorContext) -> Self {
-//         let addresses = vec![
-//             ECRecover::ADDRESS,
-//             SHA256::ADDRESS,
-//             RIPEMD160::ADDRESS,
-//             Identity::ADDRESS,
-//             ModExp::<Berlin>::ADDRESS,
-//             Bn128Add::<Istanbul>::ADDRESS,
-//             Bn128Mul::<Istanbul>::ADDRESS,
-//             Bn128Pair::<Istanbul>::ADDRESS,
-//             Blake2F::ADDRESS,
-//             ExitToNear::ADDRESS,
-//             ExitToEthereum::ADDRESS,
-//             RandomSeed::ADDRESS,
-//         ];
-//         let fun: prelude::Vec<Box<dyn Precompile>> = vec![
-//             Box::new(ECRecover),
-//             Box::new(SHA256),
-//             Box::new(RIPEMD160),
-//             Box::new(Identity),
-//             Box::new(ModExp::<Berlin>::new()),
-//             Box::new(Bn128Add::<Istanbul>::new()),
-//             Box::new(Bn128Mul::<Istanbul>::new()),
-//             Box::new(Bn128Pair::<Istanbul>::new()),
-//             Box::new(Blake2F),
-//             Box::new(ExitToNear::new(ctx.current_account_id.clone())),
-//             Box::new(ExitToEthereum::new(ctx.current_account_id)),
-//             Box::new(RandomSeed::new(ctx.random_seed)),
-//         ];
-//         let map: BTreeMap<Address, Box<dyn Precompile>> = addresses.into_iter().zip(fun).collect();
+    pub fn new_berlin(ctx: PrecompileConstructorContext) -> Self {
+        let addresses = vec![
+            ECRecover::ADDRESS,
+            SHA256::ADDRESS,
+            RIPEMD160::ADDRESS,
+            Identity::ADDRESS,
+            ModExp::<Berlin>::ADDRESS,
+            Bn128Add::<Istanbul>::ADDRESS,
+            Bn128Mul::<Istanbul>::ADDRESS,
+            Bn128Pair::<Istanbul>::ADDRESS,
+            Blake2F::ADDRESS,
+            // ExitToNear::ADDRESS,
+            // ExitToEthereum::ADDRESS,
+            // RandomSeed::ADDRESS,
+        ];
+        let fun: Vec<Box<dyn Precompile>> = vec![
+            Box::new(ECRecover),
+            Box::new(SHA256),
+            Box::new(RIPEMD160),
+            Box::new(Identity),
+            Box::new(ModExp::<Berlin>::new()),
+            Box::new(Bn128Add::<Istanbul>::new()),
+            Box::new(Bn128Mul::<Istanbul>::new()),
+            Box::new(Bn128Pair::<Istanbul>::new()),
+            Box::new(Blake2F),
+            // Box::new(ExitToNear::new(ctx.current_account_id.clone())),
+            // Box::new(ExitToEthereum::new(ctx.current_account_id)),
+            // Box::new(RandomSeed::new(ctx.random_seed)),
+        ];
+        let map: BTreeMap<Address, Box<dyn Precompile>> = addresses.into_iter().zip(fun).collect();
 
-//         Precompiles(map)
-//     }
+        Precompiles(map)
+    }
 
-//     pub fn new_london(ctx: PrecompileConstructorContext) -> Self {
-//         // no precompile changes in London HF
-//         Self::new_berlin(ctx)
-//     }
-// }
+    pub fn new_london(ctx: PrecompileConstructorContext) -> Self {
+        // no precompile changes in London HF
+        Self::new_berlin(ctx)
+    }
+}
 
 /// fn for making an address by concatenating the bytes from two given numbers,
 /// Note that 32 + 128 = 160 = 20 bytes (the length of an address). This function is used
