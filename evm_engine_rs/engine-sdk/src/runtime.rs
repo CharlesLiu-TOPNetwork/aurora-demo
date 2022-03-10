@@ -182,6 +182,7 @@ impl crate::env::Env for Runtime {
 
 pub(crate) mod exports {
     #[allow(unused)]
+    #[link(name = "xtop_mock_api")]
     extern "C" {
         // Register
         pub(crate) fn read_register(register_id: u64, ptr: u64);

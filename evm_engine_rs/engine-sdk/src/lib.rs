@@ -14,6 +14,13 @@ pub mod types;
 use runtime::exports;
 pub use types::keccak;
 
+pub fn panic_utf8(bytes: &[u8]) -> ! {
+    unsafe {
+        exports::log_utf8(bytes.len() as u64, bytes.as_ptr() as u64);
+    }
+    unreachable!()
+}
+
 pub fn log_utf8(bytes: &[u8]) {
     unsafe {
         exports::log_utf8(bytes.len() as u64, bytes.as_ptr() as u64);
