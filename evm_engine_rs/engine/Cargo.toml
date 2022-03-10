@@ -1,5 +1,5 @@
 [package]
-name = "engine"
+name = "xevm_engine"
 version = "0.1.0"
 authors = []
 edition = "2021"
@@ -13,7 +13,7 @@ publish = false
 autobenches = false
 
 [lib]
-crate_type = ["cdylib", "rlib"]
+crate_type = ["rlib", "staticlib"]
 
 [dependencies]
 engine-types = { path = "../engine-types", default-features = false }
