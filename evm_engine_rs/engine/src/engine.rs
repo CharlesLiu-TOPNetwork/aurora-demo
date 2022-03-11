@@ -254,7 +254,7 @@ impl<'env, I: IO + Copy, E: Env> Engine<'env, I, E> {
 //     sdk::sha256(&data)
 // }
 
-/// # state #
+/// # engine state #
 pub fn get_state<I: IO>(io: &I) -> Result<EngineState, EngineStateError> {
     match io.read_storage(&bytes_to_key(KeyPrefix::Config, STATE_KEY)) {
         None => Err(EngineStateError::NotFound),
