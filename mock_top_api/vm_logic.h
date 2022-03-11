@@ -42,7 +42,7 @@ public:
 
 private:
     vm_context m_context;
-    vm_ext m_ext;
+    vm_ext m_ext; // todo make storage a shared_ptr. more real.
     std::map<uint64_t, std::vector<uint8_t>> m_registers;
     vm_memory m_memory;
     uint128_t current_account_balance;
