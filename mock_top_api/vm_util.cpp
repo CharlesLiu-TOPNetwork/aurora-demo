@@ -4,6 +4,7 @@
 #include "ripemd160.h"
 #include "sh256.h"
 #include "stdint.h"
+#include "vm_util.h"
 
 #include <string>
 #include <vector>
@@ -13,12 +14,16 @@ typedef unsigned __int128 uint128_t;
 
 #define __ALIGN 32
 
-std::vector<uint8_t> noparam_function_input(std::string const & contract_address, std::string const & contract_function) {
-    std::size_t sum_size = contract_address.size() + contract_function.size();
+std::vector<uint8_t> serialize_function_input(std::string const & contract_address, std::string const & contract_params) {
+    unsigned char * params = (unsigned char *)malloc((contract_params.size() - 2) / 2);
+    hex_string_bytes_char(contract_params, params);
+
+    std::size_t sum_size = contract_address.size() + contract_params.size();
     uint64_t max_output_size = sum_size + ((-sum_size) & (__ALIGN - 1));
     unsigned char * output = (uint8_t *)malloc(max_output_size);
     uint64_t output_len = 0;
-    serial_noparam_function_callargs(contract_address.c_str(), contract_address.size(), contract_function.c_str(), contract_function.size(), max_output_size, output, &output_len);
+
+    serial_param_function_callargs(contract_address.c_str(), contract_address.size(), params, (contract_params.size() - 2) / 2, max_output_size, output, &output_len);
 
     std::vector<uint8_t> res;
     res.resize(output_len);
@@ -42,6 +47,15 @@ std::vector<uint8_t> to_le_bytes(uint128_t value) {
 }
 
 #define CON(x) (std::isdigit((x)) ? ((x) - '0') : (std::tolower((x)) - 'W'))
+
+void hex_string_bytes_char(std::string const & input, unsigned char * output) {
+    assert(input.substr(0, 2) == "0x");
+    assert(input.size() % 2 == 0);
+    for (std::size_t i = 1; i < input.size() / 2; ++i) {
+        *(output + i - 1) = (CON(input[2 * i]) << 4) + CON(input[2 * i + 1]);
+    }
+    return;
+}
 
 std::vector<uint8_t> hex_string_to_bytes(std::string const & input) {
     assert(input.substr(0, 2) == "0x");

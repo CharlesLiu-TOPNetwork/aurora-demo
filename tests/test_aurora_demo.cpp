@@ -22,13 +22,11 @@ TEST(test_demo, call_contract) {
     deploy_code();
     auto & logic = vm_import_instance::instance()->get_vm_logic_ref();
     std::string contract_address = "fb29cba9b146786da16733f89982f7481effb094";
-    std::string contract_function = "init()";
-    logic.context_ref().update_input(noparam_function_input(contract_address, contract_function));
+    std::string contract_params = "0xe1c7392a";  // "init()"
+    logic.context_ref().update_input(serialize_function_input(contract_address, contract_params));
     call_contract();
     call_contract();
 }
 
-
-TEST(test_demo,erc20){
-    
+TEST(test_demo, erc20) {
 }
