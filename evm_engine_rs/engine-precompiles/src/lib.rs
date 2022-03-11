@@ -73,24 +73,8 @@ pub trait Precompile {
 
 /// Hard fork marker.
 pub trait HardFork {}
-
-/// Homestead hard fork marker.
-pub struct Homestead;
-
-/// Homestead hard fork marker.
-pub struct Byzantium;
-
-/// Homestead hard fork marker.
-pub struct Istanbul;
-
 /// Homestead hard fork marker.
 pub struct Berlin;
-
-impl HardFork for Homestead {}
-
-impl HardFork for Byzantium {}
-
-impl HardFork for Istanbul {}
 
 impl HardFork for Berlin {}
 
@@ -122,96 +106,6 @@ pub struct PrecompileConstructorContext {
 }
 
 impl Precompiles {
-    #[allow(dead_code)]
-    pub fn new_homestead(ctx: PrecompileConstructorContext) -> Self {
-        let addresses = vec![
-            ECRecover::ADDRESS,
-            SHA256::ADDRESS,
-            RIPEMD160::ADDRESS,
-            // ExitToNear::ADDRESS,
-            // ExitToEthereum::ADDRESS,
-            // RandomSeed::ADDRESS,
-        ];
-        let fun: Vec<Box<dyn Precompile>> = vec![
-            Box::new(ECRecover),
-            Box::new(SHA256),
-            Box::new(RIPEMD160),
-            // Box::new(ExitToNear::new(ctx.current_account_id.clone())),
-            // Box::new(ExitToEthereum::new(ctx.current_account_id)),
-            // Box::new(RandomSeed::new(ctx.random_seed)),
-        ];
-        let map: BTreeMap<Address, Box<dyn Precompile>> = addresses.into_iter().zip(fun).collect();
-
-        Precompiles(map)
-    }
-
-    #[allow(dead_code)]
-    pub fn new_byzantium(ctx: PrecompileConstructorContext) -> Self {
-        let addresses = vec![
-            ECRecover::ADDRESS,
-            SHA256::ADDRESS,
-            RIPEMD160::ADDRESS,
-            Identity::ADDRESS,
-            ModExp::<Byzantium>::ADDRESS,
-            Bn128Add::<Byzantium>::ADDRESS,
-            Bn128Mul::<Byzantium>::ADDRESS,
-            Bn128Pair::<Byzantium>::ADDRESS,
-            // ExitToNear::ADDRESS,
-            // ExitToEthereum::ADDRESS,
-            // RandomSeed::ADDRESS,
-        ];
-        let fun: Vec<Box<dyn Precompile>> = vec![
-            Box::new(ECRecover),
-            Box::new(SHA256),
-            Box::new(RIPEMD160),
-            Box::new(Identity),
-            Box::new(ModExp::<Byzantium>::new()),
-            Box::new(Bn128Add::<Byzantium>::new()),
-            Box::new(Bn128Mul::<Byzantium>::new()),
-            Box::new(Bn128Pair::<Byzantium>::new()),
-            // Box::new(ExitToNear::new(ctx.current_account_id.clone())),
-            // Box::new(ExitToEthereum::new(ctx.current_account_id)),
-            // Box::new(RandomSeed::new(ctx.random_seed)),
-        ];
-        let map: BTreeMap<Address, Box<dyn Precompile>> = addresses.into_iter().zip(fun).collect();
-
-        Precompiles(map)
-    }
-
-    pub fn new_istanbul(ctx: PrecompileConstructorContext) -> Self {
-        let addresses = vec![
-            ECRecover::ADDRESS,
-            SHA256::ADDRESS,
-            RIPEMD160::ADDRESS,
-            Identity::ADDRESS,
-            ModExp::<Byzantium>::ADDRESS,
-            Bn128Add::<Istanbul>::ADDRESS,
-            Bn128Mul::<Istanbul>::ADDRESS,
-            Bn128Pair::<Istanbul>::ADDRESS,
-            Blake2F::ADDRESS,
-            // ExitToNear::ADDRESS,
-            // ExitToEthereum::ADDRESS,
-            // RandomSeed::ADDRESS,
-        ];
-        let fun: Vec<Box<dyn Precompile>> = vec![
-            Box::new(ECRecover),
-            Box::new(SHA256),
-            Box::new(RIPEMD160),
-            Box::new(Identity),
-            Box::new(ModExp::<Byzantium>::new()),
-            Box::new(Bn128Add::<Istanbul>::new()),
-            Box::new(Bn128Mul::<Istanbul>::new()),
-            Box::new(Bn128Pair::<Istanbul>::new()),
-            Box::new(Blake2F),
-            // Box::new(ExitToNear::new(ctx.current_account_id.clone())),
-            // Box::new(ExitToEthereum::new(ctx.current_account_id)),
-            // Box::new(RandomSeed::new(ctx.random_seed)),
-        ];
-        let map: BTreeMap<Address, Box<dyn Precompile>> = addresses.into_iter().zip(fun).collect();
-
-        Precompiles(map)
-    }
-
     pub fn new_berlin(ctx: PrecompileConstructorContext) -> Self {
         let addresses = vec![
             ECRecover::ADDRESS,
@@ -219,9 +113,9 @@ impl Precompiles {
             RIPEMD160::ADDRESS,
             Identity::ADDRESS,
             ModExp::<Berlin>::ADDRESS,
-            Bn128Add::<Istanbul>::ADDRESS,
-            Bn128Mul::<Istanbul>::ADDRESS,
-            Bn128Pair::<Istanbul>::ADDRESS,
+            Bn128Add::<Berlin>::ADDRESS,
+            Bn128Mul::<Berlin>::ADDRESS,
+            Bn128Pair::<Berlin>::ADDRESS,
             Blake2F::ADDRESS,
             // ExitToNear::ADDRESS,
             // ExitToEthereum::ADDRESS,
@@ -233,9 +127,9 @@ impl Precompiles {
             Box::new(RIPEMD160),
             Box::new(Identity),
             Box::new(ModExp::<Berlin>::new()),
-            Box::new(Bn128Add::<Istanbul>::new()),
-            Box::new(Bn128Mul::<Istanbul>::new()),
-            Box::new(Bn128Pair::<Istanbul>::new()),
+            Box::new(Bn128Add::<Berlin>::new()),
+            Box::new(Bn128Mul::<Berlin>::new()),
+            Box::new(Bn128Pair::<Berlin>::new()),
             Box::new(Blake2F),
             // Box::new(ExitToNear::new(ctx.current_account_id.clone())),
             // Box::new(ExitToEthereum::new(ctx.current_account_id)),

@@ -1,4 +1,4 @@
-use crate::{Berlin, Byzantium, EvmPrecompileResult, HardFork, Precompile, PrecompileOutput};
+use crate::{Berlin, EvmPrecompileResult, HardFork, Precompile, PrecompileOutput};
 use engine_types::{PhantomData, Vec, U256, types::Address, types::EthGas};
 use evm::{Context, ExitError};
 use num::{BigUint, Integer};
@@ -73,55 +73,6 @@ impl<HF: HardFork> ModExp<HF> {
         };
 
         Ok(output)
-    }
-}
-
-impl ModExp<Byzantium> {
-    // ouput of this function is bounded by 2^128
-    fn mul_complexity(x: u64) -> U256 {
-        if x <= 64 {
-            U256::from(x * x)
-        } else if x <= 1_024 {
-            U256::from(x * x / 4 + 96 * x - 3_072)
-        } else {
-            // up-cast to avoid overflow
-            let x = U256::from(x);
-            let x_sq = x * x; // x < 2^64 => x*x < 2^128 < 2^256 (no overflow)
-            x_sq / U256::from(16) + U256::from(480) * x - U256::from(199_680)
-        }
-    }
-}
-
-impl Precompile for ModExp<Byzantium> {
-    fn required_gas(input: &[u8]) -> Result<EthGas, ExitError> {
-        let (base_len, exp_len, mod_len) = parse_lengths(input);
-
-        let mul = Self::mul_complexity(core::cmp::max(mod_len, base_len));
-        let iter_count = Self::calc_iter_count(exp_len, base_len, input);
-        // mul * iter_count bounded by 2^195 < 2^256 (no overflow)
-        let gas = mul * core::cmp::max(iter_count, U256::one()) / U256::from(20);
-
-        Ok(EthGas::new(saturating_round(gas)))
-    }
-
-    /// See: https://eips.ethereum.org/EIPS/eip-198
-    /// See: https://etherscan.io/address/0000000000000000000000000000000000000005
-    fn run(
-        &self,
-        input: &[u8],
-        target_gas: Option<EthGas>,
-        _context: &Context,
-        _is_static: bool,
-    ) -> EvmPrecompileResult {
-        let cost = Self::required_gas(input)?;
-        if let Some(target_gas) = target_gas {
-            if cost > target_gas {
-                return Err(ExitError::OutOfGas);
-            }
-        }
-
-        let output = Self::run_inner(input)?;
-        Ok(PrecompileOutput::without_logs(cost, output).into())
     }
 }
 
