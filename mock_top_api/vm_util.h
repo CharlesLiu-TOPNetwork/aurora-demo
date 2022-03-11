@@ -11,7 +11,7 @@
 typedef __int128 int128_t;
 typedef unsigned __int128 uint128_t;
 
-#include <vector>
+std::vector<uint8_t> noparam_function_input(std::string const & contract_address, std::string const & contract_function);
 
 std::vector<uint8_t> to_le_bytes(uint128_t value);
 std::vector<uint8_t> hex_string_to_bytes(std::string const & input);

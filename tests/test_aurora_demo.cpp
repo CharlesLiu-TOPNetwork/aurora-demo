@@ -1,5 +1,6 @@
+#include "../mock_top_api/evm_engine_interface.h"
 #include "../mock_top_api/vm_import_instance.h"
-#include "evm_engine_interface.h"
+#include "../mock_top_api/vm_util.h"
 
 #include <gtest/gtest.h>
 
@@ -15,4 +16,19 @@ TEST(test_demo, deploy_code_twice) {
         "ff1667ffffffffffffffff167f09e6eb7229785cdf85405747f017ad07512b61743d1458c526daedb056f791a760405160405180910390a256fea2646970667358221220f5d0edd9d4d3902b094c01968b3fe1ea21"
         "1b6f8913755b092866166849deb75064736f6c63430006040033");
     deploy_code();
+}
+
+TEST(test_demo, call_contract) {
+    deploy_code();
+    auto & logic = vm_import_instance::instance()->get_vm_logic_ref();
+    std::string contract_address = "fb29cba9b146786da16733f89982f7481effb094";
+    std::string contract_function = "init()";
+    logic.context_ref().update_input(noparam_function_input(contract_address, contract_function));
+    call_contract();
+    call_contract();
+}
+
+
+TEST(test_demo,erc20){
+    
 }

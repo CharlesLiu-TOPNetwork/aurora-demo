@@ -24,6 +24,10 @@ public:
         random_seed = hex_string_to_bytes(input_hex);
     }
 
+    void update_input(std::vector<uint8_t> const & input_vec_u8) {
+        input = input_vec_u8;
+    }
+
     void update_hex_string_input(std::string const & input_hex) {
         input = hex_string_to_bytes(input_hex);
     }
