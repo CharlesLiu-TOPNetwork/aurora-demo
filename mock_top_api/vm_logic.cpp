@@ -108,11 +108,6 @@ void vm_logic::value_return(uint64_t key_len, uint64_t key_ptr) {
         printf("%x", _c);
     }
     printf("\n");
-    printf("[debug][value_return] in chars: ");
-    for (auto const & _c : return_data_value) {
-        printf("%c", _c);
-    }
-    printf("\n");
 }
 
 void vm_logic::account_balance(uint64_t balance_ptr) {
