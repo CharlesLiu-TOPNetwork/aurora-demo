@@ -1,4 +1,6 @@
 #include "assert.h"
+// if we find some ser lib that can't do the same work inside C && Rust . Then no need to use these imports.
+#include "evm_engine_interface.h"
 #include "ripemd160.h"
 #include "sh256.h"
 #include "stdint.h"
@@ -9,7 +11,27 @@
 typedef __int128 int128_t;
 typedef unsigned __int128 uint128_t;
 
-#include <vector>
+#define __ALIGN 32
+
+std::vector<uint8_t> noparam_function_input(std::string const & contract_address, std::string const & contract_function) {
+    std::size_t sum_size = contract_address.size() + contract_function.size();
+    uint64_t max_output_size = sum_size + ((-sum_size) & (__ALIGN - 1));
+    unsigned char * output = (uint8_t *)malloc(max_output_size);
+    uint64_t output_len = 0;
+    serial_noparam_function_callargs(contract_address.c_str(), contract_address.size(), contract_function.c_str(), contract_function.size(), max_output_size, output, &output_len);
+
+    std::vector<uint8_t> res;
+    res.resize(output_len);
+    // printf("outputlen: %lu\n", output_len);
+    // printf("[");
+    for (uint64_t i = 0; i < output_len; i++) {
+        // printf("%d, ", output[i]);
+        res[i] = output[i];
+    }
+    // printf("]\n");
+    free(output);
+    return res;
+}
 
 std::vector<uint8_t> to_le_bytes(uint128_t value) {
     std::vector<uint8_t> ret(16);

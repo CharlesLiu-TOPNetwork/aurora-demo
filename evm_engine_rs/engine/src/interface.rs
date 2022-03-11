@@ -67,7 +67,7 @@ mod interface {
             .sdk_process();
     }
     #[no_mangle]
-    pub extern "C" fn serial_function_callargs(
+    pub extern "C" fn serial_noparam_function_callargs(
         address: *const u8,
         address_len: u64,
         funtion: *const u8,
