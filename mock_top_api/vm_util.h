@@ -11,9 +11,10 @@
 typedef __int128 int128_t;
 typedef unsigned __int128 uint128_t;
 
-std::vector<uint8_t> noparam_function_input(std::string const & contract_address, std::string const & contract_function);
+std::vector<uint8_t> serialize_function_input(std::string const & contract_address, std::string const & contract_function);
 
 std::vector<uint8_t> to_le_bytes(uint128_t value);
+void hex_string_bytes_char(std::string const & input, unsigned char * output);
 std::vector<uint8_t> hex_string_to_bytes(std::string const & input);
 std::vector<uint8_t> string_to_bytes(std::string const & input);
 std::vector<uint8_t> get_sha256(std::vector<uint8_t> const & input);
