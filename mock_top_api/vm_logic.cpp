@@ -38,10 +38,10 @@ void vm_logic::read_register(uint64_t register_id, uint64_t ptr) {
     memory_set_slice(ptr, data);
 }
 
-void vm_logic::current_account_id(uint64_t register_id) {
-    // printf("[debug][current_account_id] request: %lu \n", register_id);
-    internal_write_register(register_id, m_context.account_id);
-}
+// void vm_logic::current_account_id(uint64_t register_id) {
+//     // printf("[debug][current_account_id] request: %lu \n", register_id);
+//     internal_write_register(register_id, m_context.account_id);
+// }
 
 void vm_logic::predecessor_account_id(uint64_t register_id) {
     // printf("[debug][predecessor_account_id] request: %lu \n", register_id);
