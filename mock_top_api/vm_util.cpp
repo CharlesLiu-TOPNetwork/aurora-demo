@@ -85,6 +85,20 @@ std::vector<uint8_t> string_to_bytes(std::string const & input) {
     return res;
 }
 
+std::string uint8_vector_to_hex_string(std::vector<uint8_t> const & v) {
+    std::string result;
+    result.reserve(v.size() * 2);  // two digits per character
+
+    static constexpr char hex[] = "0123456789abcdef";
+
+    for (uint8_t c : v) {
+        result.push_back(hex[c / 16]);
+        result.push_back(hex[c % 16]);
+    }
+
+    return result;
+}
+
 std::vector<uint8_t> get_sha256(std::vector<uint8_t> const & input) {
     BYTE _input[input.size()];
     for (std::size_t index = 0; index < input.size(); ++index) {

@@ -18,6 +18,7 @@ mod interface {
 
     #[no_mangle]
     pub extern "C" fn deploy_code() {
+        println!("========= deploy_code =========");
         let io = Runtime;
         let input = io.read_input().to_vec();
         let current_account_id = io.current_account_id();
@@ -38,6 +39,7 @@ mod interface {
     }
     #[no_mangle]
     pub extern "C" fn call_contract() {
+        println!("========= call_contract =========");
         let io = Runtime;
         let current_account_id = io.current_account_id();
         // let eth_address = "fb29cba9b146786da16733f89982f7481effb094";
@@ -106,7 +108,7 @@ mod interface {
                 }
                 *output_len = ser.len() as u64;
             };
-            println!("ser: {:?}", ser);
+            // println!("ser: {:?}", ser);
         }
     }
 }

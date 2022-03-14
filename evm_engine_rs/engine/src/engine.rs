@@ -608,7 +608,7 @@ impl<'env, J: IO + Copy, E: Env> ApplyBackend for Engine<'env, J, E> {
                         set_code(&mut self.io, &address, &code);
                         code_bytes_written = code.len();
 
-                        println!("[aurora!!!][engine][apply] code_write_at_address");
+                        // println!("[aurora!!!][engine][apply] code_write_at_address");
                         sdk::log!(crate::prelude::format!(
                             "code_write_at_address {:?} {}",
                             address,
@@ -662,7 +662,7 @@ impl<'env, J: IO + Copy, E: Env> ApplyBackend for Engine<'env, J, E> {
         if code_bytes_written > 0 {
             writes_counter += 1;
         }
-        println!("[aurora!!!][engine][apply] ");
+        // println!("[aurora!!!][engine][apply] ");
         sdk::log!(crate::prelude::format!("total_writes_count {}", writes_counter).as_str());
         sdk::log!(crate::prelude::format!("total_written_bytes {}", total_bytes).as_str());
     }

@@ -9,12 +9,16 @@ vm_logic::vm_logic(vm_context const & context, vm_ext const & ext) : m_context{c
     // current_account_balance xxx
     m_registers.clear();
     // m_memory.clear();
-    return_data_value.clear();
+    m_return_data_value.clear();
 }
 
 // public api
 vm_context & vm_logic::context_ref() {
     return m_context;
+}
+
+std::vector<uint8_t> vm_logic::return_value() {
+    return m_return_data_value;
 }
 
 //  =========================== public api ===============================
@@ -35,22 +39,22 @@ void vm_logic::read_register(uint64_t register_id, uint64_t ptr) {
 }
 
 void vm_logic::current_account_id(uint64_t register_id) {
-    printf("[debug][current_account_id] request: %lu \n", register_id);
+    // printf("[debug][current_account_id] request: %lu \n", register_id);
     internal_write_register(register_id, m_context.account_id);
 }
 
 void vm_logic::predecessor_account_id(uint64_t register_id) {
-    printf("[debug][predecessor_account_id] request: %lu \n", register_id);
+    // printf("[debug][predecessor_account_id] request: %lu \n", register_id);
     internal_write_register(register_id, m_context.predecessor_account_id);
 }
 
 void vm_logic::signer_account_id(uint64_t register_id) {
-    printf("[debug][signer_account_id] request: %lu\n", register_id);
+    // printf("[debug][signer_account_id] request: %lu\n", register_id);
     internal_write_register(register_id, m_context.signer_account_id);
 }
 
 void vm_logic::input(uint64_t register_id) {
-    printf("[debug][input] request: %lu\n", register_id);
+    // printf("[debug][input] request: %lu\n", register_id);
     internal_write_register(register_id, m_context.input);
     return;
 }
@@ -102,9 +106,9 @@ uint64_t vm_logic::storage_remove(uint64_t key_len, uint64_t key_ptr, uint64_t r
 }
 
 void vm_logic::value_return(uint64_t key_len, uint64_t key_ptr) {
-    return_data_value = get_vec_from_memory_or_register(key_ptr, key_len);
+    m_return_data_value = get_vec_from_memory_or_register(key_ptr, key_len);
     printf("[debug][value_return] in hex: ");
-    for (auto const & _c : return_data_value) {
+    for (auto const & _c : m_return_data_value) {
         printf("%x", _c);
     }
     printf("\n");
