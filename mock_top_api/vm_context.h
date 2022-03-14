@@ -14,7 +14,7 @@ public:
         "ffffffff1681565b60016000809054906101000a900467ffffffffffffffff16016000806101000a81548167ffffffffffffffff021916908367ffffffffffffffff1602179055507fce5afaa0bb50af954d597743"
         "1c65c35b4417c30984ca04e53ce06ffeb4fc27146000809054906101000a900467ffffffffffffffff16604051808267ffffffffffffffff1667ffffffffffffffff16815260200191505060405180910390a156fe"
         "a2646970667358221220609918375f4be9388512c0f6c641dae865436156ff2b6382f7157cfe819f424a64736f6c63430006040033");
-    std::vector<uint8_t> account_id = string_to_bytes("aurora");
+    // std::vector<uint8_t> account_id = string_to_bytes("aurora");
     std::vector<uint8_t> predecessor_account_id = string_to_bytes("carol");
     std::vector<uint8_t> signer_account_id = string_to_bytes("signer");
     // std::vector<uint8_t> input{'1', '2', '3'};
@@ -32,9 +32,9 @@ public:
         input = hex_string_to_bytes(input_hex);
     }
 
-    void update_string_account_id(std::string const & input_str) {
-        account_id = string_to_bytes(input_str);
-    }
+    // void update_string_account_id(std::string const & input_str) {
+    //     account_id = string_to_bytes(input_str);
+    // }
 
     void update_string_predecessor_account_id(std::string const & input_str) {
         predecessor_account_id = string_to_bytes(input_str);

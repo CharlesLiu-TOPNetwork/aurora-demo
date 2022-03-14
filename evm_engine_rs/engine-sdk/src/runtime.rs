@@ -145,12 +145,12 @@ impl crate::env::Env for Runtime {
         Self::read_account_id()
     }
 
-    fn current_account_id(&self) -> engine_types::account_id::AccountId {
-        unsafe {
-            exports::current_account_id(Self::ENV_REGISTER_ID.0);
-        }
-        Self::read_account_id()
-    }
+    // fn current_account_id(&self) -> engine_types::account_id::AccountId {
+    //     unsafe {
+    //         exports::current_account_id(Self::ENV_REGISTER_ID.0);
+    //     }
+    //     Self::read_account_id()
+    // }
 
     fn predecessor_account_id(&self) -> engine_types::account_id::AccountId {
         unsafe {
@@ -188,7 +188,7 @@ pub(crate) mod exports {
         pub(crate) fn register_len(register_id: u64) -> u64;
 
         // Context
-        pub(crate) fn current_account_id(register_id: u64);
+        // pub(crate) fn current_account_id(register_id: u64);
         pub(crate) fn signer_account_id(register_id: u64);
 
         pub(crate) fn predecessor_account_id(register_id: u64);

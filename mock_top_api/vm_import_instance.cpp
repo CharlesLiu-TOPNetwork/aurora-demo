@@ -26,10 +26,10 @@ uint64_t vm_import_instance::register_len(uint64_t register_id) {
 }
 
 // context:
-void vm_import_instance::current_account_id(uint64_t register_id) {
-    m_vm_logic.current_account_id(register_id);
-    return;
-}
+// void vm_import_instance::current_account_id(uint64_t register_id) {
+//     m_vm_logic.current_account_id(register_id);
+//     return;
+// }
 void vm_import_instance::signer_account_id(uint64_t register_id) {
     m_vm_logic.signer_account_id(register_id);
     return;
@@ -94,10 +94,10 @@ uint64_t register_len(uint64_t register_id) {
     return vm_import_instance::instance()->register_len(register_id);
 }
 // # Context API #
-void current_account_id(uint64_t register_id) {
-    vm_import_instance::instance()->current_account_id(register_id);
-    return;
-}
+// void current_account_id(uint64_t register_id) {
+//     vm_import_instance::instance()->current_account_id(register_id);
+//     return;
+// }
 void signer_account_id(uint64_t register_id) {
     vm_import_instance::instance()->signer_account_id(register_id);
     return;

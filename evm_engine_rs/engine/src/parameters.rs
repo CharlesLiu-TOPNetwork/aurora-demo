@@ -1,20 +1,20 @@
 use crate::prelude::*;
 use evm::backend::Log;
 
-/// Borsh-encoded parameters for the `new` function.
-#[derive(BorshSerialize, BorshDeserialize)]
-pub struct NewCallArgs {
-    /// Chain id, according to the EIP-115 / ethereum-lists spec.
-    pub chain_id: RawU256,
-    /// Account which can upgrade this contract.
-    /// Use empty to disable updatability.
-    pub owner_id: AccountId,
-    /// Account of the bridge prover.
-    /// Use empty to not use base token as bridged asset.
-    pub bridge_prover_id: AccountId,
-    /// How many blocks after staging upgrade can deploy it.
-    pub upgrade_delay_blocks: u64,
-}
+// /// Borsh-encoded parameters for the `new` function.
+// #[derive(BorshSerialize, BorshDeserialize)]
+// pub struct NewCallArgs {
+//     /// Chain id, according to the EIP-115 / ethereum-lists spec.
+//     pub chain_id: RawU256,
+//     /// Account which can upgrade this contract.
+//     /// Use empty to disable updatability.
+//     pub owner_id: AccountId,
+//     /// Account of the bridge prover.
+//     /// Use empty to not use base token as bridged asset.
+//     pub bridge_prover_id: AccountId,
+//     /// How many blocks after staging upgrade can deploy it.
+//     pub upgrade_delay_blocks: u64,
+// }
 
 /// Borsh-encoded log for use in a `SubmitResult`.
 #[derive(Debug, BorshSerialize, BorshDeserialize)]

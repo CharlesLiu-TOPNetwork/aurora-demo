@@ -1,6 +1,6 @@
 #![allow(unused)]
 use crate::error::{BalanceOverflow, EngineError, EngineErrorKind, EngineStateError};
-use crate::parameters::{NewCallArgs, ResultLog, SubmitResult, TransactionStatus};
+use crate::parameters::{ResultLog, SubmitResult, TransactionStatus};
 use crate::prelude::*;
 use core::cell::RefCell;
 use engine_precompiles::{Precompile, PrecompileConstructorContext, Precompiles};
@@ -18,10 +18,10 @@ struct StackExecutorParams {
 }
 
 impl StackExecutorParams {
-    fn new(gas_limit: u64, current_account_id: AccountId, random_seed: H256) -> Self {
+    fn new(gas_limit: u64, /*current_account_id: AccountId,*/ random_seed: H256) -> Self {
         Self {
             precompiles: Precompiles::new_london(PrecompileConstructorContext {
-                current_account_id,
+                // current_account_id,
                 random_seed,
             }),
             gas_limit,
@@ -67,32 +67,32 @@ impl ExitIntoResult for ExitReason {
 pub struct EngineState {
     /// Chain id, according to the EIP-155 / ethereum-lists spec.
     pub chain_id: [u8; 32],
-    /// Account which can upgrade this contract.
-    /// Use empty to disable updatability.
-    pub owner_id: AccountId,
-    /// Account of the bridge prover.
-    /// Use empty to not use base token as bridged asset.
-    pub bridge_prover_id: AccountId,
-    /// How many blocks after staging upgrade can deploy it.
-    pub upgrade_delay_blocks: u64,
+    // /// Account which can upgrade this contract.
+    // /// Use empty to disable updatability.
+    // pub owner_id: AccountId,
+    // /// Account of the bridge prover.
+    // /// Use empty to not use base token as bridged asset.
+    // pub bridge_prover_id: AccountId,
+    // /// How many blocks after staging upgrade can deploy it.
+    // pub upgrade_delay_blocks: u64
 }
 
-impl From<NewCallArgs> for EngineState {
-    fn from(args: NewCallArgs) -> Self {
-        EngineState {
-            chain_id: args.chain_id,
-            owner_id: args.owner_id,
-            bridge_prover_id: args.bridge_prover_id,
-            upgrade_delay_blocks: args.upgrade_delay_blocks,
-        }
-    }
-}
+// impl From<NewCallArgs> for EngineState {
+//     fn from(args: NewCallArgs) -> Self {
+//         EngineState {
+//             chain_id: args.chain_id,
+//             // owner_id: args.owner_id,
+//             // bridge_prover_id: args.bridge_prover_id,
+//             // upgrade_delay_blocks: args.upgrade_delay_blocks,
+//         }
+//     }
+// }
 
 pub struct Engine<'env, I: IO, E: Env> {
     state: EngineState,
     origin: Address,
     gas_price: U256,
-    current_account_id: AccountId,
+    // current_account_id: AccountId,
     io: I,
     env: &'env E,
     generation_cache: RefCell<BTreeMap<Address, u32>>,
@@ -107,17 +107,23 @@ pub type EngineResult<T> = Result<T, EngineError>;
 impl<'env, I: IO + Copy, E: Env> Engine<'env, I, E> {
     pub fn new(
         origin: Address,
-        current_account_id: AccountId,
+        // current_account_id: AccountId,
         io: I,
         env: &'env E,
     ) -> Result<Self, EngineStateError> {
-        get_state(&io).map(|state| Self::new_with_state(state, origin, current_account_id, io, env))
+        Ok(Self::new_with_state(
+            EngineState::default(),
+            origin,
+            // current_account_id,
+            io,
+            env,
+        ))
     }
 
     pub fn new_with_state(
         state: EngineState,
         origin: Address,
-        current_account_id: AccountId,
+        // current_account_id: AccountId,
         io: I,
         env: &'env E,
     ) -> Self {
@@ -125,7 +131,7 @@ impl<'env, I: IO + Copy, E: Env> Engine<'env, I, E> {
             state,
             origin,
             gas_price: U256::zero(),
-            current_account_id,
+            // current_account_id,
             io,
             env,
             generation_cache: RefCell::new(BTreeMap::new()),
@@ -150,7 +156,7 @@ impl<'env, I: IO + Copy, E: Env> Engine<'env, I, E> {
     ) -> EngineResult<SubmitResult> {
         let executor_params = StackExecutorParams::new(
             gas_limit,
-            self.current_account_id.clone(),
+            // self.current_account_id.clone(),
             self.env.random_seed(),
         );
         let mut executor = executor_params.make_executor(self);
@@ -206,7 +212,7 @@ impl<'env, I: IO + Copy, E: Env> Engine<'env, I, E> {
     ) -> EngineResult<SubmitResult> {
         let executor_params = StackExecutorParams::new(
             gas_limit,
-            self.current_account_id.clone(),
+            // self.current_account_id.clone(),
             self.env.random_seed(),
         );
         let mut executor = executor_params.make_executor(self);
@@ -254,20 +260,20 @@ impl<'env, I: IO + Copy, E: Env> Engine<'env, I, E> {
 //     sdk::sha256(&data)
 // }
 
-/// # engine state #
-pub fn get_state<I: IO>(io: &I) -> Result<EngineState, EngineStateError> {
-    match io.read_storage(&bytes_to_key(KeyPrefix::Config, STATE_KEY)) {
-        None => Err(EngineStateError::NotFound),
-        Some(bytes) => EngineState::try_from_slice(&bytes.to_vec())
-            .map_err(|_| EngineStateError::DeserializationFailed),
-    }
-}
-pub fn set_state<I: IO>(io: &mut I, state: EngineState) {
-    io.write_storage(
-        &bytes_to_key(KeyPrefix::Config, STATE_KEY),
-        &state.try_to_vec().expect("ERR_SER"),
-    );
-}
+// /// # engine state #
+// pub fn get_state<I: IO>(io: &I) -> Result<EngineState, EngineStateError> {
+//     match io.read_storage(&bytes_to_key(KeyPrefix::Config, STATE_KEY)) {
+//         None => Err(EngineStateError::NotFound),
+//         Some(bytes) => EngineState::try_from_slice(&bytes.to_vec())
+//             .map_err(|_| EngineStateError::DeserializationFailed),
+//     }
+// }
+// pub fn set_state<I: IO>(io: &mut I, state: EngineState) {
+//     io.write_storage(
+//         &bytes_to_key(KeyPrefix::Config, STATE_KEY),
+//         &state.try_to_vec().expect("ERR_SER"),
+//     );
+// }
 
 /// # balance #
 pub fn add_balance<I: IO>(

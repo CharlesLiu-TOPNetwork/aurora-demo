@@ -10,10 +10,10 @@
 class vm_ext {
 public:
     vm_ext() {
-        ext_kv_datas.insert(
-            {hex_string_to_bytes("0x01005354415445"),
-             hex_string_to_bytes(
-                 "0x000000000000000000000000000000000000000000000000000000004e454154060000006175726f7261120000006272696467655f70726f7665722e6e6561720100000000000000")});
+        // ext_kv_datas.insert(
+        //     {hex_string_to_bytes("0x01005354415445"),
+        //      hex_string_to_bytes(
+        //          "0x000000000000000000000000000000000000000000000000000000004e454154060000006175726f7261120000006272696467655f70726f7665722e6e6561720100000000000000")});
     }
     std::vector<uint8_t> storage_get(std::vector<uint8_t> const & key) {
         auto res = ext_kv_datas[key];
