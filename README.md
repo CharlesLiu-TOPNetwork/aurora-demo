@@ -1,10 +1,10 @@
 # top_evm_runtime
 
 ## Directories Instructions:
-#### mock_top_api
+#### xevm_runtime
 * language: `C++`
-* target: `libxtop_mock_api.a`
-#### evm_engine_rs:
+* target: `libxevm_runtime.a`
+#### xevm_engine_rs:
 * language: `Rust`
 * target: `libxevm_engine.a`
 #### tests

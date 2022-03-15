@@ -1,6 +1,6 @@
-#include "../mock_top_api/evm_engine_interface.h"
-#include "../mock_top_api/vm_import_instance.h"
-#include "../mock_top_api/vm_util.h"
+#include "../xevm_runtime/evm_engine_interface.h"
+#include "../xevm_runtime/vm_import_instance.h"
+#include "../xevm_runtime/vm_util.h"
 
 #include <gtest/gtest.h>
 
