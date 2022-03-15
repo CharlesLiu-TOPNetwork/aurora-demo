@@ -65,13 +65,13 @@ public:
             }
 
             for (auto & c : pair.first) {
-                printf("%x", c);
+                printf("%02x", c);
             }
 
-            printf("\n");
+            printf("size: %zu \n", pair.first.size());
             printf("[     value]: ");
             for (auto & c : pair.second) {
-                printf("%x", c);
+                printf("%02x", c);
             }
             printf("\n");
         }
