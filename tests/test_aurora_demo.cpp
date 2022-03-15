@@ -134,7 +134,7 @@ TEST(test_demo, erc20) {
 
     std::string contract_address = uint8_vector_to_hex_string(logic.return_value()).substr(12, 40);
     std::cout << contract_address << std::endl;
-    
+
     // erc.totalSupply.getData()
     std::string contract_params = "0x18160ddd";
     logic.context_ref().update_input(serialize_function_input(contract_address, contract_params));
@@ -152,6 +152,58 @@ TEST(test_demo, erc20) {
 
     // erc.balanceOf.getData("0000000000000000000000000000000000000123")
     contract_params = "0x70a08231000000000000000000000000000000000000000000000000000000000000007b";
+    logic.context_ref().update_input(serialize_function_input(contract_address, contract_params));
+    call_contract();
+}
+
+TEST(test_demo, balance) {
+    // ./solidity_contracts/test_balance.sol
+
+    vm_logic new_logic;
+    vm_import_instance::instance()->set_vm_logic(new_logic);
+    auto & logic = vm_import_instance::instance()->get_vm_logic_ref();
+    auto & ext = logic.ext_ref();
+    ext.debug(ext_type::Balance);
+    mock_add_balance();
+    ext.debug(ext_type::Balance);
+    mock_add_balance();
+    ext.debug(ext_type::Balance);
+    mock_add_balance();
+    mock_add_balance();
+    ext.debug(ext_type::Balance);
+    logic.context_ref().update_hex_string_input(
+        "0x608060405234801561001057600080fd5b5061024e806100206000396000f3fe60806040526004361061002d5760003560e01c80632565b1b8146100b3578063ad7a672f146100ee576100ae565b366100ae5734"
+        "60008082825401925050819055507fe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c3334604051808373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffff"
+        "ffffffffffffffffffffffff1681526020018281526020019250505060405180910390a1005b600080fd5b3480156100bf57600080fd5b506100ec600480360360208110156100d657600080fd5b81019080803590"
+        "60200190929190505050610119565b005b3480156100fa57600080fd5b50610103610212565b6040518082815260200191505060405180910390f35b80600080828254039250508190555060003373ffffffffffff"
+        "ffffffffffffffffffffffffffff1661271083604051806000019050600060405180830381858888f193505050503d806000811461018c576040519150601f19603f3d011682016040523d82523d6000602084013e"
+        "610191565b606091505b5050809150507f171a466754afbbdce4dc1ab85f822d6767825c31a83b1113cc18bc97ddbfed2281338460405180841515151581526020018373ffffffffffffffffffffffffffffffffff"
+        "ffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001828152602001935050505060405180910390a15050565b6000548156fea26469706673582212201285a1a792cec99fd557c4fb8b1f92"
+        "dccf09d34d37da99fe7de2b8526427bf3f64736f6c63430006040033");
+
+    deploy_code();
+    ext.debug();
+    std::string contract_address = uint8_vector_to_hex_string(logic.return_value()).substr(12, 40);
+
+    // deposit
+    std::string contract_params = "0x";
+    logic.context_ref().update_input(serialize_function_input(contract_address, contract_params, 3000000));
+    call_contract();
+    ext.debug(ext_type::Balance);
+
+    // tes.totalBalance.getData()
+    contract_params = "0xad7a672f";
+    logic.context_ref().update_input(serialize_function_input(contract_address, contract_params));
+    call_contract();
+
+    // tes.withdraw_balance.getData(666)
+    contract_params = "0x2565b1b8000000000000000000000000000000000000000000000000000000000000029a";
+    logic.context_ref().update_input(serialize_function_input(contract_address, contract_params));
+    call_contract();
+    ext.debug(ext_type::Balance);
+
+    // tes.totalBalance.getData()
+    contract_params = "0xad7a672f";
     logic.context_ref().update_input(serialize_function_input(contract_address, contract_params));
     call_contract();
 }

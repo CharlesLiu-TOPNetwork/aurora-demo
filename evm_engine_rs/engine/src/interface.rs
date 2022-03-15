@@ -4,6 +4,7 @@ use crate::prelude::*;
 
 mod interface {
     use crate::engine::Engine;
+    use crate::engine::*;
     use crate::prelude::*;
     use crate::util;
     use engine_sdk::{
@@ -74,6 +75,7 @@ mod interface {
     pub extern "C" fn serial_param_function_callargs(
         address: *const u8,
         address_len: u64,
+        value: u64,
         params: *const u8,
         params_len: u64,
         max_output_len: u64,
@@ -93,7 +95,7 @@ mod interface {
         .collect();
         let args = CallArgs::V2(FunctionCallArgsV2 {
             contract: Address::new(H160::from_slice(&hex::decode(address).unwrap()[..])),
-            value: [0; 32],
+            value: Wei::new(value.into()).to_bytes(),
             input: params,
         });
         let mut ser: Vec<u8> = Vec::new();
@@ -111,5 +113,20 @@ mod interface {
             };
             // println!("ser: {:?}", ser);
         }
+    }
+    #[no_mangle]
+    pub extern "C" fn mock_add_balance() {
+        println!("========= set_balance =========");
+        let mut io = Runtime;
+        let mut engine = Engine::new(
+            predecessor_address(&io.predecessor_account_id()),
+            // current_account_id,
+            io,
+            &io,
+        )
+        .sdk_unwrap();
+        let origin = predecessor_address(&io.predecessor_account_id());
+        let origin_value = get_balance(&mut io, &origin);
+        set_balance(&mut io, &origin, &Wei::new(origin_value.raw() + 10000000));
     }
 }

@@ -4,6 +4,17 @@
 #include <map>
 #include <string>
 
+enum class ext_type {
+    Config = 0x0,
+    Nonce = 0x1,
+    Balance = 0x2,
+    Code = 0x3,
+    Storage = 0x4,
+    Generation = 0x5,
+
+    ALL = 0x6  // show all
+};
+
 // should be a vitrual base class `External` in C++
 // Trait: `runtime/near-vm-logic/src/dependencies.rs`
 // Impl: `runtime/runtime/src/ext.rs`
@@ -26,6 +37,44 @@ public:
 
     void storage_remove(std::vector<uint8_t> const & key) {
         ext_kv_datas.erase(key);
+    }
+
+    void debug(ext_type const & debug_type = ext_type::ALL) {
+        for (auto & pair : ext_kv_datas) {
+            if (debug_type != ext_type::ALL && ext_type(pair.first[1]) != debug_type) {
+                continue;
+            }
+            switch (ext_type(pair.first[1])) {
+            case ext_type::Nonce:
+                printf("[key - nonce]: ");
+                break;
+            case ext_type::Balance:
+                printf("[key - balance]: ");
+                break;
+            case ext_type::Code:
+                printf("[key - code]: ");
+                break;
+            case ext_type::Storage:
+                printf("[key - storage]: ");
+                break;
+            case ext_type::Generation:
+                printf("[key - generation]: ");
+                break;
+            default:
+                printf("[key - unknown]: ");
+            }
+
+            for (auto & c : pair.first) {
+                printf("%x", c);
+            }
+
+            printf("\n");
+            printf("[     value]: ");
+            for (auto & c : pair.second) {
+                printf("%x", c);
+            }
+            printf("\n");
+        }
     }
 
 private:
