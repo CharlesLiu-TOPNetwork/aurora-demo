@@ -1,8 +1,8 @@
 use crate::types::Address;
-use crate::{H256, Vec};
+use crate::{Vec, H256};
 use borsh::{BorshDeserialize, BorshSerialize};
 pub enum VersionPrefix {
-    V1 = 0x1, // todo figure out init state key
+    V1 = 0x1,
 }
 
 #[allow(dead_code)]

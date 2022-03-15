@@ -13,6 +13,10 @@ vm_logic::vm_logic(vm_context const & context, vm_ext const & ext) : m_context{c
 }
 
 // public api
+vm_ext & vm_logic::ext_ref() {
+    return m_ext;
+}
+
 vm_context & vm_logic::context_ref() {
     return m_context;
 }

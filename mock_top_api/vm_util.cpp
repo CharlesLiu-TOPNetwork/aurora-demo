@@ -14,7 +14,7 @@ typedef unsigned __int128 uint128_t;
 
 #define __ALIGN 32
 
-std::vector<uint8_t> serialize_function_input(std::string const & contract_address, std::string const & contract_params) {
+std::vector<uint8_t> serialize_function_input(std::string const & contract_address, std::string const & contract_params, uint64_t value) {
     unsigned char * params = (unsigned char *)malloc((contract_params.size() - 2) / 2);
     hex_string_bytes_char(contract_params, params);
 
@@ -23,7 +23,7 @@ std::vector<uint8_t> serialize_function_input(std::string const & contract_addre
     unsigned char * output = (uint8_t *)malloc(max_output_size);
     uint64_t output_len = 0;
 
-    serial_param_function_callargs(contract_address.c_str(), contract_address.size(), params, (contract_params.size() - 2) / 2, max_output_size, output, &output_len);
+    serial_param_function_callargs(contract_address.c_str(), contract_address.size(), value, params, (contract_params.size() - 2) / 2, max_output_size, output, &output_len);
 
     std::vector<uint8_t> res;
     res.resize(output_len);
