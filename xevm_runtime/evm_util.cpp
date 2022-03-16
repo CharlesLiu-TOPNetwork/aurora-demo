@@ -1,16 +1,13 @@
+#include "xevm_runtime/evm_util.h"
+
 #include "assert.h"
-// if we find some ser lib that can't do the same work inside C && Rust . Then no need to use these imports.
-#include "evm_engine_interface.h"
 #include "ripemd160.h"
 #include "sh256.h"
-#include "stdint.h"
-#include "vm_util.h"
+#include "xevm_runtime/evm_engine_interface.h"
 
-#include <string>
-#include <vector>
-
-typedef __int128 int128_t;
-typedef unsigned __int128 uint128_t;
+namespace top {
+namespace evm {
+namespace utils {
 
 #define __ALIGN 32
 
@@ -131,3 +128,7 @@ std::vector<uint8_t> get_ripemd160(std::vector<uint8_t> const & input) {
     ripemd160_cal(msg, msglen, phash);
     return hash;
 }
+
+}  // namespace utils
+}  // namespace evm
+}  // namespace top

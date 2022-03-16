@@ -1,32 +1,13 @@
-#include "../xevm_runtime/evm_engine_interface.h"
-#include "../xevm_runtime/vm_import_instance.h"
-#include "../xevm_runtime/vm_util.h"
+#include "tests/evm_test_fixture/xmock_evm_storage.h"
+#include "xevm_runtime/evm_engine_interface.h"
+#include "xevm_runtime/evm_import_instance.h"
+#include "xevm_runtime/evm_logic.h"
+#include "xevm_runtime/evm_util.h"
 
 #include <gtest/gtest.h>
 
-TEST(test_demo, deploy_code_twice) {
-    auto & logic = vm_import_instance::instance()->get_vm_logic_ref();
-    deploy_code();
-    logic.context_ref().update_hex_string_input(
-        "0x608060405234801561001057600080fd5b506101f7806100206000396000f3fe6080604052600436106100345760003560e01c80634f2be91f14610039578063c3da42b814610043578063c54124be1461008257"
-        "5b600080fd5b61004161008c565b005b34801561004f57600080fd5b5061005861011a565b604051808267ffffffffffffffff1667ffffffffffffffff16815260200191505060405180910390f35b61008a610133"
-        "565b005b60016000809054906101000a900467ffffffffffffffff16016000806101000a81548167ffffffffffffffff021916908367ffffffffffffffff1602179055506000809054906101000a900467ffffffff"
-        "ffffffff1667ffffffffffffffff167f53777d0aaa80b55d855a69674c6ee34efa3ccb05a03ad90c38aaa0eacfe7dcd760405160405180910390a2565b6000809054906101000a900467ffffffffffffffff168156"
-        "5b60016000809054906101000a900467ffffffffffffffff16036000806101000a81548167ffffffffffffffff021916908367ffffffffffffffff1602179055506000809054906101000a900467ffffffffffffff"
-        "ff1667ffffffffffffffff167f09e6eb7229785cdf85405747f017ad07512b61743d1458c526daedb056f791a760405160405180910390a256fea2646970667358221220f5d0edd9d4d3902b094c01968b3fe1ea21"
-        "1b6f8913755b092866166849deb75064736f6c63430006040033");
-    deploy_code();
-}
-
-TEST(test_demo, call_contract) {
-    deploy_code();
-    auto & logic = vm_import_instance::instance()->get_vm_logic_ref();
-    std::string contract_address = uint8_vector_to_hex_string(logic.return_value()).substr(12, 40);
-    std::string contract_params = "0xe1c7392a";  // "init()"
-    logic.context_ref().update_input(serialize_function_input(contract_address, contract_params));
-    call_contract();
-    call_contract();
-}
+using namespace top::evm;
+using tests::xmock_evm_storage;
 
 TEST(test_demo, test_add_contract) {
     /***************************************************
@@ -50,11 +31,8 @@ TEST(test_demo, test_add_contract) {
         }
     }
     ******************************************************/
-    vm_logic new_logic;
-    vm_import_instance::instance()->set_vm_logic(new_logic);
-    auto & logic = vm_import_instance::instance()->get_vm_logic_ref();
-
-    logic.context_ref().update_hex_string_input(
+    bytes random_seed = utils::hex_string_to_bytes("0x1234567890");
+    bytes input = utils::hex_string_to_bytes(
         "0x608060405234801561001057600080fd5b50610304806100206000396000f3fe608060405234801561001057600080fd5b506004361061004c5760003560e01c80632fb3c740146100515780636e2c732d146100"
         "5b578063a05f9906146100a7578063fad772db146100d9575b600080fd5b610059610111565b005b6100a56004803603604081101561007157600080fd5b81019080803567ffffffffffffffff1690602001909291"
         "90803567ffffffffffffffff1690602001909291905050506101b3565b005b6100af610242565b604051808267ffffffffffffffff1667ffffffffffffffff16815260200191505060405180910390f35b61010f60"
@@ -65,33 +43,36 @@ TEST(test_demo, test_add_contract) {
         "5050505060405180910390a1505050565b6000809054906101000a900467ffffffffffffffff1681565b60006001820190507f76b87589c0efe817c6ec312c8fa2ab35ac24bbbd1e5fb8d3e3c3b4b789fdc7d48282"
         "604051808367ffffffffffffffff1667ffffffffffffffff1681526020018267ffffffffffffffff1667ffffffffffffffff1681526020019250505060405180910390a1505056fea2646970667358221220aa046f"
         "634f0927440a2dc3e5b0298f8101a60505f1d303bc416a90fcc0db54fa64736f6c63430006040033");
+    bytes predecessor_account_id = utils::string_to_bytes("carol");
+    xevm_context_t context{random_seed, input, predecessor_account_id};
+    xevm_logic_t n_logic{std::make_shared<xmock_evm_storage>(), context};
+    evm_import_instance::instance()->set_vm_logic(n_logic);
+    auto & logic = evm_import_instance::instance()->get_vm_logic_ref();
+
     deploy_code();
 
-    std::string contract_address = uint8_vector_to_hex_string(logic.return_value()).substr(12, 40);
+    std::string contract_address = utils::uint8_vector_to_hex_string(logic.return_value()).substr(12, 40);
 
     // add(123, 321) => (123,321,444)
     std::string contract_params = "0x6e2c732d000000000000000000000000000000000000000000000000000000000000007b0000000000000000000000000000000000000000000000000000000000000141";
-    logic.context_ref().update_input(serialize_function_input(contract_address, contract_params));
+    logic.context_ref().update_input(utils::serialize_function_input(contract_address, contract_params));
     call_contract();
 
     // addOne(12345) => (12346)
     contract_params = "0xfad772db0000000000000000000000000000000000000000000000000000000000003039";
-    logic.context_ref().update_input(serialize_function_input(contract_address, contract_params));
+    logic.context_ref().update_input(utils::serialize_function_input(contract_address, contract_params));
     call_contract();
 
     // addGlobal => (1)
     contract_params = "0x2fb3c740";
-    logic.context_ref().update_input(serialize_function_input(contract_address, contract_params));
+    logic.context_ref().update_input(utils::serialize_function_input(contract_address, contract_params));
     call_contract();
 }
 
 TEST(test_demo, erc20) {
     // ./solidity_contracts/erc20.sol
-
-    vm_logic new_logic;
-    vm_import_instance::instance()->set_vm_logic(new_logic);
-    auto & logic = vm_import_instance::instance()->get_vm_logic_ref();
-    logic.context_ref().update_hex_string_input(
+    bytes random_seed = utils::hex_string_to_bytes("0x1234567890");
+    bytes input = utils::hex_string_to_bytes(
         "0x60806040526040518060400160405280600781526020017f4d794572633230000000000000000000000000000000000000000000000000008152506003908051906020019061004f92919061016a565b50604051"
         "8060400160405280600381526020017f53594d00000000000000000000000000000000000000000000000000000000008152506004908051906020019061009b92919061016a565b506012600560006101000a8154"
         "8160ff021916908360ff1602179055503480156100c457600080fd5b50620186a0600081905550600054600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffff"
@@ -130,47 +111,66 @@ TEST(test_demo, erc20) {
         "2001600020600082825401925050819055508273ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff167fddf252ad1be2c89b69c2b068fc378daa952ba7f1"
         "63c4a11628f55a4df523b3ef846040518082815260200191505060405180910390a36001905092915050565b600260205281600052604060002060205280600052604060002060009150915050548156fea2646970"
         "667358221220d85b6d67c18cbaefa92cadb028ffbb9d0d410e0960f7466456990c711ab8a77464736f6c63430006040033");
+    bytes predecessor_account_id = utils::string_to_bytes("carol");
+    xevm_context_t context{random_seed, input, predecessor_account_id};
+    xevm_logic_t n_logic{std::make_shared<xmock_evm_storage>(), context};
+    evm_import_instance::instance()->set_vm_logic(n_logic);
+    auto & logic = evm_import_instance::instance()->get_vm_logic_ref();
+
     deploy_code();
 
-    std::string contract_address = uint8_vector_to_hex_string(logic.return_value()).substr(12, 40);
+    std::string contract_address = utils::uint8_vector_to_hex_string(logic.return_value()).substr(12, 40);
     std::cout << contract_address << std::endl;
 
     // erc.totalSupply.getData()
     std::string contract_params = "0x18160ddd";
-    logic.context_ref().update_input(serialize_function_input(contract_address, contract_params));
+    logic.context_ref().update_input(utils::serialize_function_input(contract_address, contract_params));
     call_contract();
 
     // erc.balanceOf.getData("0000000000000000000000000000000000000123")
     contract_params = "0x70a08231000000000000000000000000000000000000000000000000000000000000007b";
-    logic.context_ref().update_input(serialize_function_input(contract_address, contract_params));
+    logic.context_ref().update_input(utils::serialize_function_input(contract_address, contract_params));
     call_contract();
 
     // erc.transfer.getData("0000000000000000000000000000000000000123",123)
     contract_params = "0xa9059cbb000000000000000000000000000000000000000000000000000000000000007b000000000000000000000000000000000000000000000000000000000000007b";
-    logic.context_ref().update_input(serialize_function_input(contract_address, contract_params));
+    logic.context_ref().update_input(utils::serialize_function_input(contract_address, contract_params));
     call_contract();
 
     // erc.balanceOf.getData("0000000000000000000000000000000000000123")
     contract_params = "0x70a08231000000000000000000000000000000000000000000000000000000000000007b";
-    logic.context_ref().update_input(serialize_function_input(contract_address, contract_params));
+    logic.context_ref().update_input(utils::serialize_function_input(contract_address, contract_params));
     call_contract();
 }
 
 TEST(test_demo, balance) {
     // ./solidity_contracts/test_balance.sol
 
-    vm_logic new_logic;
-    vm_import_instance::instance()->set_vm_logic(new_logic);
-    auto & logic = vm_import_instance::instance()->get_vm_logic_ref();
-    auto & ext = logic.ext_ref();
-    ext.debug(ext_type::Balance);
+    bytes random_seed = utils::hex_string_to_bytes("0x1234567890");
+    bytes input = utils::hex_string_to_bytes(
+        "0x608060405234801561001057600080fd5b5061024e806100206000396000f3fe60806040526004361061002d5760003560e01c80632565b1b8146100b3578063ad7a672f146100ee576100ae565b366100ae5734"
+        "60008082825401925050819055507fe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c3334604051808373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffff"
+        "ffffffffffffffffffffffff1681526020018281526020019250505060405180910390a1005b600080fd5b3480156100bf57600080fd5b506100ec600480360360208110156100d657600080fd5b81019080803590"
+        "60200190929190505050610119565b005b3480156100fa57600080fd5b50610103610212565b6040518082815260200191505060405180910390f35b80600080828254039250508190555060003373ffffffffffff"
+        "ffffffffffffffffffffffffffff1661271083604051806000019050600060405180830381858888f193505050503d806000811461018c576040519150601f19603f3d011682016040523d82523d6000602084013e"
+        "610191565b606091505b5050809150507f171a466754afbbdce4dc1ab85f822d6767825c31a83b1113cc18bc97ddbfed2281338460405180841515151581526020018373ffffffffffffffffffffffffffffffffff"
+        "ffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001828152602001935050505060405180910390a15050565b6000548156fea26469706673582212201285a1a792cec99fd557c4fb8b1f92"
+        "dccf09d34d37da99fe7de2b8526427bf3f64736f6c63430006040033");
+    bytes predecessor_account_id = utils::string_to_bytes("carol");
+    xevm_context_t context{random_seed, input, predecessor_account_id};
+    xevm_logic_t n_logic{std::make_shared<xmock_evm_storage>(), context};
+    evm_import_instance::instance()->set_vm_logic(n_logic);
+    auto & logic = evm_import_instance::instance()->get_vm_logic_ref();
+    // auto storage = logic.ext_ref();
+
+    // ext.debug(ext_type::Balance);
     mock_add_balance();
-    ext.debug(ext_type::Balance);
+    // ext.debug(ext_type::Balance);
     mock_add_balance();
-    ext.debug(ext_type::Balance);
+    // ext.debug(ext_type::Balance);
     mock_add_balance();
     mock_add_balance();
-    ext.debug(ext_type::Balance);
+    // ext.debug(ext_type::Balance);
     logic.context_ref().update_hex_string_input(
         "0x608060405234801561001057600080fd5b5061024e806100206000396000f3fe60806040526004361061002d5760003560e01c80632565b1b8146100b3578063ad7a672f146100ee576100ae565b366100ae5734"
         "60008082825401925050819055507fe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c3334604051808373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffff"
@@ -182,28 +182,28 @@ TEST(test_demo, balance) {
         "dccf09d34d37da99fe7de2b8526427bf3f64736f6c63430006040033");
 
     deploy_code();
-    ext.debug();
-    std::string contract_address = uint8_vector_to_hex_string(logic.return_value()).substr(12, 40);
+    // ext.debug();
+    std::string contract_address = utils::uint8_vector_to_hex_string(logic.return_value()).substr(12, 40);
 
     // deposit
     std::string contract_params = "0x";
-    logic.context_ref().update_input(serialize_function_input(contract_address, contract_params, 3000000));
+    logic.context_ref().update_input(utils::serialize_function_input(contract_address, contract_params, 3000000));
     call_contract();
-    ext.debug(ext_type::Balance);
+    // ext.debug(ext_type::Balance);
 
     // tes.totalBalance.getData()
     contract_params = "0xad7a672f";
-    logic.context_ref().update_input(serialize_function_input(contract_address, contract_params));
+    logic.context_ref().update_input(utils::serialize_function_input(contract_address, contract_params));
     call_contract();
 
     // tes.withdraw_balance.getData(666)
     contract_params = "0x2565b1b8000000000000000000000000000000000000000000000000000000000000029a";
-    logic.context_ref().update_input(serialize_function_input(contract_address, contract_params));
+    logic.context_ref().update_input(utils::serialize_function_input(contract_address, contract_params));
     call_contract();
-    ext.debug(ext_type::Balance);
+    // ext.debug(ext_type::Balance);
 
     // tes.totalBalance.getData()
     contract_params = "0xad7a672f";
-    logic.context_ref().update_input(serialize_function_input(contract_address, contract_params));
+    logic.context_ref().update_input(utils::serialize_function_input(contract_address, contract_params));
     call_contract();
 }

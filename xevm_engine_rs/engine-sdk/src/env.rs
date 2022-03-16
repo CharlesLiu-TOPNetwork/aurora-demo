@@ -25,7 +25,7 @@ impl Timestamp {
 }
 
 pub trait Env {
-    fn signer_account_id(&self) -> AccountId;
+    // fn signer_account_id(&self) -> AccountId;
     // fn current_account_id(&self) -> AccountId;
     fn predecessor_account_id(&self) -> AccountId;
 

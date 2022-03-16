@@ -1,5 +1,3 @@
-#![allow(unused)]
-
 use crate::{fmt, str, str::FromStr, Box, String, Vec};
 use borsh::{BorshDeserialize, BorshSerialize};
 
@@ -14,7 +12,7 @@ impl AccountId {
         Ok(Self(account_id.into()))
     }
 
-    pub fn validate(account_id: &str) -> Result<(), ParseAccountError> {
+    pub fn validate(_account_id: &str) -> Result<(), ParseAccountError> {
         // todo add validate
         Ok(())
     }

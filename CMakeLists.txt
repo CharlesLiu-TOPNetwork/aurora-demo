@@ -43,6 +43,10 @@ set(LIBRARY_OUTPUT_PATH ${XTOP_EVM_DEMO_BINARY_DIR}/lib/${CMAKE_SYSTEM_NAME}/)
 message(STATUS "EXECUTABLE_OUTPUT_PATH:" ${EXECUTABLE_OUTPUT_PATH})
 message(STATUS "LIBRARY_OUTPUT_PATH:" ${LIBRARY_OUTPUT_PATH})
 
+
+message(STATUS "CMAKE_CURRENT_SOURCE_DIR: " ${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 add_subdirectory(xevm_engine_rs)
 add_subdirectory(xevm_runtime)
 add_subdirectory(tests)

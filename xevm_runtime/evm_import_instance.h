@@ -1,22 +1,25 @@
 #pragma once
 #include "stdint.h"
-#include "vm_logic.h"
+#include "xevm_runtime/evm_logic.h"
 
-class vm_import_instance {
+namespace top {
+namespace evm {
+
+class evm_import_instance {
 public:
-    static vm_import_instance * instance();
+    static evm_import_instance * instance();
 
 private:
-    vm_import_instance() {
+    evm_import_instance() {
     }
-    ~vm_import_instance() {
+    ~evm_import_instance() {
     }
 
-    vm_logic m_vm_logic;
+    top::evm::xtop_evm_logic m_vm_logic{nullptr, top::evm::xevm_context_t{}};
 
 public:
-    void set_vm_logic(vm_logic & vm_logic);
-    vm_logic & get_vm_logic_ref();
+    void set_vm_logic(top::evm::xtop_evm_logic & vm_logic);
+    top::evm::xtop_evm_logic & get_vm_logic_ref();
 
 public:
     // register:
@@ -44,3 +47,6 @@ public:
     uint64_t storage_read(uint64_t key_len, uint64_t key_ptr, uint64_t register_id);
     uint64_t storage_remove(uint64_t key_len, uint64_t key_ptr, uint64_t register_id);
 };
+
+}  // namespace evm
+}  // namespace top

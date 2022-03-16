@@ -138,12 +138,12 @@ impl crate::io::IO for Runtime {
 }
 
 impl crate::env::Env for Runtime {
-    fn signer_account_id(&self) -> engine_types::account_id::AccountId {
-        unsafe {
-            exports::signer_account_id(Self::ENV_REGISTER_ID.0);
-        }
-        Self::read_account_id()
-    }
+    // fn signer_account_id(&self) -> engine_types::account_id::AccountId {
+    //     unsafe {
+    //         exports::signer_account_id(Self::ENV_REGISTER_ID.0);
+    //     }
+    //     Self::read_account_id()
+    // }
 
     // fn current_account_id(&self) -> engine_types::account_id::AccountId {
     //     unsafe {
@@ -189,13 +189,10 @@ pub(crate) mod exports {
 
         // Context
         // pub(crate) fn current_account_id(register_id: u64);
-        pub(crate) fn signer_account_id(register_id: u64);
+        // pub(crate) fn signer_account_id(register_id: u64);
 
         pub(crate) fn predecessor_account_id(register_id: u64);
         pub(crate) fn input(register_id: u64);
-
-        // Economics
-        fn account_balance(balance_ptr: u64);
 
         // Math
         pub(crate) fn random_seed(register_id: u64);
