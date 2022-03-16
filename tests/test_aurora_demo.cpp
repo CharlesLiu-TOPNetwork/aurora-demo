@@ -48,7 +48,7 @@ TEST(test_demo, test_add_contract) {
     xevm_context_t context{random_seed, input, predecessor_account_id};
     std::shared_ptr<xmock_evm_storage> storage_ptr = std::make_shared<xmock_evm_storage>();
     xevm_logic_t n_logic{storage_ptr, context};
-    evm_import_instance::instance()->set_vm_logic(n_logic);
+    evm_import_instance::instance()->set_evm_logic(n_logic);
     auto & logic = evm_import_instance::instance()->get_vm_logic_ref();
 
     deploy_code();
@@ -118,7 +118,7 @@ TEST(test_demo, erc20) {
     xevm_context_t context{random_seed, input, predecessor_account_id};
     std::shared_ptr<xmock_evm_storage> storage_ptr = std::make_shared<xmock_evm_storage>();
     xevm_logic_t n_logic{storage_ptr, context};
-    evm_import_instance::instance()->set_vm_logic(n_logic);
+    evm_import_instance::instance()->set_evm_logic(n_logic);
     auto & logic = evm_import_instance::instance()->get_vm_logic_ref();
 
     deploy_code();
@@ -166,7 +166,7 @@ TEST(test_demo, balance) {
     xevm_context_t context{random_seed, input, predecessor_account_id};
     std::shared_ptr<xmock_evm_storage> storage_ptr = std::make_shared<xmock_evm_storage>();
     xevm_logic_t n_logic{storage_ptr, context};
-    evm_import_instance::instance()->set_vm_logic(n_logic);
+    evm_import_instance::instance()->set_evm_logic(n_logic);
     auto & logic = evm_import_instance::instance()->get_vm_logic_ref();
     // auto storage = logic.ext_ref();
 

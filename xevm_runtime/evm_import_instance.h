@@ -15,10 +15,10 @@ private:
     ~evm_import_instance() {
     }
 
-    top::evm::xtop_evm_logic m_vm_logic{nullptr, top::evm::xevm_context_t{}};
+    top::evm::xtop_evm_logic m_vm_logic{nullptr, top::evm::xevm_context_t{{}, {}, {}}};
 
 public:
-    void set_vm_logic(top::evm::xtop_evm_logic & vm_logic);
+    void set_evm_logic(top::evm::xtop_evm_logic & vm_logic);
     top::evm::xtop_evm_logic & get_vm_logic_ref();
 
 public:

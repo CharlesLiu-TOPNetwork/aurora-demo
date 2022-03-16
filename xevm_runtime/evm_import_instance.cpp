@@ -9,7 +9,7 @@ evm_import_instance * evm_import_instance::instance() {
     return &ins;
 }
 
-void evm_import_instance::set_vm_logic(top::evm::xtop_evm_logic & vm_logic) {
+void evm_import_instance::set_evm_logic(top::evm::xtop_evm_logic & vm_logic) {
     m_vm_logic = std::move(vm_logic);
 }
 
