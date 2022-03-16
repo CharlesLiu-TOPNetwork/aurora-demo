@@ -60,41 +60,44 @@ impl Precompile for Blake2F {
             }
         }
 
-        let mut rounds_bytes = [0u8; 4];
-        rounds_bytes.copy_from_slice(&input[0..4]);
-        let rounds = u32::from_be_bytes(rounds_bytes);
+        return Err(ExitError::OutOfGas);
 
-        let mut h = [0u64; 8];
-        for (mut x, value) in h.iter_mut().enumerate() {
-            let mut word: [u8; 8] = [0u8; 8];
-            x = x * 8 + 4;
-            word.copy_from_slice(&input[x..(x + 8)]);
-            *value = u64::from_le_bytes(word);
-        }
+        // let mut rounds_bytes = [0u8; 4];
+        // rounds_bytes.copy_from_slice(&input[0..4]);
+        // let rounds = u32::from_be_bytes(rounds_bytes);
 
-        let mut m = [0u64; 16];
-        for (mut x, value) in m.iter_mut().enumerate() {
-            let mut word: [u8; 8] = [0u8; 8];
-            x = x * 8 + 68;
-            word.copy_from_slice(&input[x..(x + 8)]);
-            *value = u64::from_le_bytes(word);
-        }
+        // let mut h = [0u64; 8];
+        // for (mut x, value) in h.iter_mut().enumerate() {
+        //     let mut word: [u8; 8] = [0u8; 8];
+        //     x = x * 8 + 4;
+        //     word.copy_from_slice(&input[x..(x + 8)]);
+        //     *value = u64::from_le_bytes(word);
+        // }
 
-        let mut t: [u64; 2] = [0u64; 2];
-        for (mut x, value) in t.iter_mut().enumerate() {
-            let mut word: [u8; 8] = [0u8; 8];
-            x = x * 8 + 196;
-            word.copy_from_slice(&input[x..(x + 8)]);
-            *value = u64::from_le_bytes(word);
-        }
+        // let mut m = [0u64; 16];
+        // for (mut x, value) in m.iter_mut().enumerate() {
+        //     let mut word: [u8; 8] = [0u8; 8];
+        //     x = x * 8 + 68;
+        //     word.copy_from_slice(&input[x..(x + 8)]);
+        //     *value = u64::from_le_bytes(word);
+        // }
 
-        // TODO: need add blake2 algorithm!!!
-        if input[212] != 0 && input[212] != 1 {
-            return Err(ExitError::Other(Borrowed("ERR_BLAKE2F_FINAL_FLAG")));
-        }
-        let finished = input[212] != 0;
+        // let mut t: [u64; 2] = [0u64; 2];
+        // for (mut x, value) in t.iter_mut().enumerate() {
+        //     let mut word: [u8; 8] = [0u8; 8];
+        //     x = x * 8 + 196;
+        //     word.copy_from_slice(&input[x..(x + 8)]);
+        //     *value = u64::from_le_bytes(word);
+        // }
 
-        let output = near_blake2::blake2b_f(rounds, h, m, t, finished).to_vec();
-        Ok(PrecompileOutput::without_logs(cost, output).into())
+        // // TODO: need add blake2 algorithm!!!
+        // if input[212] != 0 && input[212] != 1 {
+        //     return Err(ExitError::Other(Borrowed("ERR_BLAKE2F_FINAL_FLAG")));
+        // }
+        // let finished = input[212] != 0;
+
+        // let output = near_blake2::blake2b_f(rounds, h, m, t, finished).to_vec();
+
+        // Ok(PrecompileOutput::without_logs(cost, output).into())
     }
 }

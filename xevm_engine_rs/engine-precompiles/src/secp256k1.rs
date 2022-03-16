@@ -1,6 +1,6 @@
 use crate::{EvmPrecompileResult, Precompile, PrecompileOutput};
-use engine_types::{vec, Borrowed, H256, types::Address, types::EthGas};
 use engine_sdk as sdk;
+use engine_types::{types::Address, types::EthGas, vec, Borrowed, H256};
 use evm::{Context, ExitError};
 
 mod costs {
@@ -15,18 +15,15 @@ mod consts {
 }
 
 pub fn ecrecover(hash: H256, signature: &[u8]) -> Result<Address, ExitError> {
-    assert_eq!(signature.len(), 65);
+    assert_eq!(signature.len(), consts::SIGN_LEN);
 
-    unreachable!();
+    #[cfg(not(feature = "top_crypto"))]
+    return sdk::ecrecover(hash, signature).map_err(|e| ExitError::Other(Borrowed(e.as_str())));
 
-    // TODO: implenment SDK
-    // return sdk::ecrecover(hash, signature).map_err(|e| ExitError::Other(Borrowed(e.as_str())));
-    
-    #[cfg(feature = "contract")]
+    #[cfg(feature = "top_crypto")]
     internal_impl(hash, signature)
 }
 
-#[cfg(feature = "contract")]
 fn internal_impl(hash: H256, signature: &[u8]) -> Result<Address, ExitError> {
     use sha3::Digest;
 

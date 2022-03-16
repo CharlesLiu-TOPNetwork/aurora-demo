@@ -1,6 +1,6 @@
 use crate::{EvmPrecompileResult, Precompile, PrecompileOutput};
 use engine_sdk as sdk;
-use engine_types::{vec, types::Address, types::EthGas};
+use engine_types::{types::Address, types::EthGas, vec};
 use evm::{Context, ExitError};
 
 mod costs {
@@ -56,28 +56,14 @@ impl Precompile for SHA256 {
             }
         }
 
+        #[cfg(not(feature = "top_crypto"))]
         let output = sha2::Sha256::digest(input).to_vec();
+
+        #[cfg(feature = "top_crypto")]
+        let output = sdk::sha256(input).as_bytes().to_vec();
+
         Ok(PrecompileOutput::without_logs(cost, output).into())
     }
-    
-    // TODO: need implenment sdk
-    // fn run(
-    //     &self,
-    //     input: &[u8],
-    //     target_gas: Option<EthGas>,
-    //     _context: &Context,
-    //     _is_static: bool,
-    // ) -> EvmPrecompileResult {
-    //     let cost = Self::required_gas(input)?;
-    //     if let Some(target_gas) = target_gas {
-    //         if cost > target_gas {
-    //             return Err(ExitError::OutOfGas);
-    //         }
-    //     }
-
-    //     let output = sdk::sha256(input).as_bytes().to_vec();
-    //     Ok(PrecompileOutput::without_logs(cost, output).into())
-    // }
 }
 
 /// RIPEMD160 precompile.
@@ -117,11 +103,13 @@ impl Precompile for RIPEMD160 {
                 return Err(ExitError::OutOfGas);
             }
         }
-        
-        unreachable!();
-        // TODO: implenment SDK
-        // let hash = sdk::ripemd160(input);
+
+        #[cfg(not(feature = "top_crypto"))]
         let hash = Self::internal_impl(input);
+
+        #[cfg(feature = "top_crypto")]
+        let hash = sdk::ripemd160(input);
+
         // The result needs to be padded with leading zeros because it is only 20 bytes, but
         // the evm works with 32-byte words.
         let mut output = vec![0u8; 32];
@@ -129,4 +117,3 @@ impl Precompile for RIPEMD160 {
         Ok(PrecompileOutput::without_logs(cost, output).into())
     }
 }
-

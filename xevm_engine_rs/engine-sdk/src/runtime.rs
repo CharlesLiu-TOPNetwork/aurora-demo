@@ -199,6 +199,15 @@ pub(crate) mod exports {
         pub(crate) fn sha256(value_len: u64, value_ptr: u64, register_id: u64);
         pub(crate) fn keccak256(value_len: u64, value_ptr: u64, register_id: u64);
         pub(crate) fn ripemd160(value_len: u64, value_ptr: u64, register_id: u64);
+        pub(crate) fn ecrecover(
+            hash_len: u64,
+            hash_ptr: u64,
+            sig_len: u64,
+            sig_ptr: u64,
+            v: u64,
+            malleability_flag: u64,
+            register_id: u64,
+        ) -> u64;
 
         // Others
         pub(crate) fn value_return(value_len: u64, value_ptr: u64);
