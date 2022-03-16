@@ -6,7 +6,6 @@ mod interface {
     use crate::engine::Engine;
     use crate::engine::*;
     use crate::prelude::*;
-    use crate::util;
     use engine_sdk::{
         env::Env,
         io::{StorageIntermediate, IO},

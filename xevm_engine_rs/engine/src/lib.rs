@@ -6,4 +6,3 @@ mod error;
 pub mod interface;
 pub mod parameters;
 mod prelude;
-mod util;
