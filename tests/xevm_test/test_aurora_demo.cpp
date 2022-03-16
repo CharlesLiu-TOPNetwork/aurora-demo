@@ -1,4 +1,4 @@
-#include "tests/evm_test_fixture/xmock_evm_storage.h"
+#include "tests/xevm_test/evm_test_fixture/xmock_evm_storage.h"
 #include "xevm_runtime/evm_engine_interface.h"
 #include "xevm_runtime/evm_import_instance.h"
 #include "xevm_runtime/evm_logic.h"
