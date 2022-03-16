@@ -19,6 +19,19 @@ fn main() {
         .arg(&format!("{}", out_dir))
         .status()
         .unwrap();
+    
+    // product: 
+    // from: cbuild/src/xtopcom/xevm_engine_rs/debug/build/xevm_engine-94e9d92524952b17/out/
+    // to  : cbuild/lib/Linux
+    // Command::new("cp")
+    //     .arg("-f")
+    //     .arg(&format!(
+    //         "{}/../../../../../../../lib/Linux/libxevm_runtime.a",
+    //         out_dir
+    //     ))
+    //     .arg(&format!("{}", out_dir))
+    //     .status()
+    //     .unwrap();
 
     println!("cargo:rustc-link-search=native={}", out_dir);
     println!("cargo:rustc-link-lib=static=xevm_runtime");

@@ -49,4 +49,4 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_subdirectory(xevm_engine_rs)
 add_subdirectory(xevm_runtime)
-add_subdirectory(tests)
+add_subdirectory(tests/xevm_test)
