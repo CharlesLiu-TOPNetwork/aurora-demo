@@ -1,12 +1,12 @@
 #pragma once
-#include "xevm_runtime/evm_storage_face.h"
+#include "xevm_runtime/evm_storage_base.h"
 
 #include <map>
 
 namespace top {
 namespace evm {
 namespace tests {
-class xmock_evm_storage : public xtop_evm_storage_face {
+class xmock_evm_storage : public xtop_evm_storage_base {
 public:
     xmock_evm_storage() = default;
     xmock_evm_storage(xmock_evm_storage const &) = delete;
@@ -21,43 +21,40 @@ public:
 
     void storage_remove(bytes const & key) override;
 
-    // void debug(ext_type const & debug_type = ext_type::ALL) {
-    //     for (auto & pair : ext_kv_datas) {
-    //         if (debug_type != ext_type::ALL && ext_type(pair.first[1]) != debug_type) {
-    //             continue;
-    //         }
-    //         switch (ext_type(pair.first[1])) {
-    //         case ext_type::Nonce:
-    //             printf("[key - nonce]: ");
-    //             break;
-    //         case ext_type::Balance:
-    //             printf("[key - balance]: ");
-    //             break;
-    //         case ext_type::Code:
-    //             printf("[key - code]: ");
-    //             break;
-    //         case ext_type::Storage:
-    //             printf("[key - storage]: ");
-    //             break;
-    //         case ext_type::Generation:
-    //             printf("[key - generation]: ");
-    //             break;
-    //         default:
-    //             printf("[key - unknown]: ");
-    //         }
+    void debug(storage_key_type const & debug_type = storage_key_type::ALL) {
+        for (auto & pair : ext_kv_datas) {
+            auto decode_key = decode_key_type(pair.first);
+            if (debug_type != storage_key_type::ALL && decode_key.key_type != debug_type) {
+                continue;
+            }
+            switch (decode_key.key_type) {
+            case storage_key_type::Nonce:
+                printf("[key - nonce]: %s ", decode_key.address.c_str());
+                break;
+            case storage_key_type::Balance:
+                printf("[key - balance]: %s ", decode_key.address.c_str());
+                break;
+            case storage_key_type::Code:
+                printf("[key - code]: %s ", decode_key.address.c_str());
+                break;
+            case storage_key_type::Storage:
+                printf("[key - storage]: %s ", decode_key.address.c_str());
+                break;
+            case storage_key_type::Generation:
+                printf("[key - generation]: %s ", decode_key.address.c_str());
+                break;
+            default:
+                printf("[key - unknown]: ");
+            }
 
-    //         for (auto & c : pair.first) {
-    //             printf("%02x", c);
-    //         }
-
-    //         printf("size: %zu \n", pair.first.size());
-    //         printf("[     value]: ");
-    //         for (auto & c : pair.second) {
-    //             printf("%02x", c);
-    //         }
-    //         printf("\n");
-    //     }
-    // }
+            printf("\n");
+            printf("[     value]: ");
+            for (auto & c : pair.second) {
+                printf("%02x", c);
+            }
+            printf("\n");
+        }
+    }
 
 private:
     std::map<std::vector<uint8_t>, std::vector<uint8_t>> ext_kv_datas;

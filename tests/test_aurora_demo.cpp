@@ -43,9 +43,11 @@ TEST(test_demo, test_add_contract) {
         "5050505060405180910390a1505050565b6000809054906101000a900467ffffffffffffffff1681565b60006001820190507f76b87589c0efe817c6ec312c8fa2ab35ac24bbbd1e5fb8d3e3c3b4b789fdc7d48282"
         "604051808367ffffffffffffffff1667ffffffffffffffff1681526020018267ffffffffffffffff1667ffffffffffffffff1681526020019250505060405180910390a1505056fea2646970667358221220aa046f"
         "634f0927440a2dc3e5b0298f8101a60505f1d303bc416a90fcc0db54fa64736f6c63430006040033");
-    bytes predecessor_account_id = utils::string_to_bytes("carol");
+    bytes predecessor_account_id = utils::string_to_bytes("mock_account");
+
     xevm_context_t context{random_seed, input, predecessor_account_id};
-    xevm_logic_t n_logic{std::make_shared<xmock_evm_storage>(), context};
+    std::shared_ptr<xmock_evm_storage> storage_ptr = std::make_shared<xmock_evm_storage>();
+    xevm_logic_t n_logic{storage_ptr, context};
     evm_import_instance::instance()->set_vm_logic(n_logic);
     auto & logic = evm_import_instance::instance()->get_vm_logic_ref();
 
@@ -111,9 +113,11 @@ TEST(test_demo, erc20) {
         "2001600020600082825401925050819055508273ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff167fddf252ad1be2c89b69c2b068fc378daa952ba7f1"
         "63c4a11628f55a4df523b3ef846040518082815260200191505060405180910390a36001905092915050565b600260205281600052604060002060205280600052604060002060009150915050548156fea2646970"
         "667358221220d85b6d67c18cbaefa92cadb028ffbb9d0d410e0960f7466456990c711ab8a77464736f6c63430006040033");
-    bytes predecessor_account_id = utils::string_to_bytes("carol");
+    bytes predecessor_account_id = utils::string_to_bytes("mock_account");
+
     xevm_context_t context{random_seed, input, predecessor_account_id};
-    xevm_logic_t n_logic{std::make_shared<xmock_evm_storage>(), context};
+    std::shared_ptr<xmock_evm_storage> storage_ptr = std::make_shared<xmock_evm_storage>();
+    xevm_logic_t n_logic{storage_ptr, context};
     evm_import_instance::instance()->set_vm_logic(n_logic);
     auto & logic = evm_import_instance::instance()->get_vm_logic_ref();
 
@@ -141,6 +145,7 @@ TEST(test_demo, erc20) {
     contract_params = "0x70a08231000000000000000000000000000000000000000000000000000000000000007b";
     logic.context_ref().update_input(utils::serialize_function_input(contract_address, contract_params));
     call_contract();
+    storage_ptr->debug();
 }
 
 TEST(test_demo, balance) {
@@ -156,21 +161,23 @@ TEST(test_demo, balance) {
         "610191565b606091505b5050809150507f171a466754afbbdce4dc1ab85f822d6767825c31a83b1113cc18bc97ddbfed2281338460405180841515151581526020018373ffffffffffffffffffffffffffffffffff"
         "ffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001828152602001935050505060405180910390a15050565b6000548156fea26469706673582212201285a1a792cec99fd557c4fb8b1f92"
         "dccf09d34d37da99fe7de2b8526427bf3f64736f6c63430006040033");
-    bytes predecessor_account_id = utils::string_to_bytes("carol");
+    bytes predecessor_account_id = utils::string_to_bytes("mock_account");
+
     xevm_context_t context{random_seed, input, predecessor_account_id};
-    xevm_logic_t n_logic{std::make_shared<xmock_evm_storage>(), context};
+    std::shared_ptr<xmock_evm_storage> storage_ptr = std::make_shared<xmock_evm_storage>();
+    xevm_logic_t n_logic{storage_ptr, context};
     evm_import_instance::instance()->set_vm_logic(n_logic);
     auto & logic = evm_import_instance::instance()->get_vm_logic_ref();
     // auto storage = logic.ext_ref();
 
-    // ext.debug(ext_type::Balance);
+    storage_ptr->debug(storage_key_type::Balance);
     mock_add_balance();
-    // ext.debug(ext_type::Balance);
+    storage_ptr->debug(storage_key_type::Balance);
     mock_add_balance();
-    // ext.debug(ext_type::Balance);
+    storage_ptr->debug(storage_key_type::Balance);
     mock_add_balance();
     mock_add_balance();
-    // ext.debug(ext_type::Balance);
+    storage_ptr->debug(storage_key_type::Balance);
     logic.context_ref().update_hex_string_input(
         "0x608060405234801561001057600080fd5b5061024e806100206000396000f3fe60806040526004361061002d5760003560e01c80632565b1b8146100b3578063ad7a672f146100ee576100ae565b366100ae5734"
         "60008082825401925050819055507fe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c3334604051808373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffff"
@@ -182,14 +189,14 @@ TEST(test_demo, balance) {
         "dccf09d34d37da99fe7de2b8526427bf3f64736f6c63430006040033");
 
     deploy_code();
-    // ext.debug();
+    storage_ptr->debug();
     std::string contract_address = utils::uint8_vector_to_hex_string(logic.return_value()).substr(12, 40);
 
     // deposit
     std::string contract_params = "0x";
     logic.context_ref().update_input(utils::serialize_function_input(contract_address, contract_params, 3000000));
     call_contract();
-    // ext.debug(ext_type::Balance);
+    storage_ptr->debug(storage_key_type::Balance);
 
     // tes.totalBalance.getData()
     contract_params = "0xad7a672f";
@@ -200,7 +207,7 @@ TEST(test_demo, balance) {
     contract_params = "0x2565b1b8000000000000000000000000000000000000000000000000000000000000029a";
     logic.context_ref().update_input(utils::serialize_function_input(contract_address, contract_params));
     call_contract();
-    // ext.debug(ext_type::Balance);
+    storage_ptr->debug(storage_key_type::Balance);
 
     // tes.totalBalance.getData()
     contract_params = "0xad7a672f";
