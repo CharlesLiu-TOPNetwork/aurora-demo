@@ -87,33 +87,33 @@ uint64_t evm_import_instance::storage_remove(uint64_t key_len, uint64_t key_ptr,
 
 extern "C" {
 // # Registers #
-void read_register(uint64_t register_id, uint64_t ptr) {
+void evm_read_register(uint64_t register_id, uint64_t ptr) {
     evm_import_instance::instance()->read_register(register_id, ptr);
     return;
 }
-uint64_t register_len(uint64_t register_id) {
+uint64_t evm_register_len(uint64_t register_id) {
     return evm_import_instance::instance()->register_len(register_id);
 }
 // # Context API #
-// void current_account_id(uint64_t register_id) {
+// evm_void current_account_id(uint64_t register_id) {
 //     evm_import_instance::instance()->current_account_id(register_id);
 //     return;
 // }
-// void signer_account_id(uint64_t register_id) {
+// evm_void signer_account_id(uint64_t register_id) {
 //     evm_import_instance::instance()->signer_account_id(register_id);
 //     return;
 // }
-void predecessor_account_id(uint64_t register_id) {
+void evm_predecessor_account_id(uint64_t register_id) {
     evm_import_instance::instance()->predecessor_account_id(register_id);
     return;
 }
-void input(uint64_t register_id) {
+void evm_input(uint64_t register_id) {
     evm_import_instance::instance()->input(register_id);
     return;
 }
 
 // // # Economics API #
-// void account_balance(uint64_t balance_ptr) {
+// evm_void account_balance(uint64_t balance_ptr) {
 //     evm_import_instance::instance()->account_balance(balance_ptr);
 //     return;
 // }
@@ -121,41 +121,41 @@ void input(uint64_t register_id) {
 // ############
 // # Math API #
 // ############
-void random_seed(uint64_t register_id) {
+void evm_random_seed(uint64_t register_id) {
     evm_import_instance::instance()->random_seed(register_id);
     return;
 }
-void sha256(uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
+void evm_sha256(uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
     evm_import_instance::instance()->sha256(value_len, value_ptr, register_id);
     return;
 }
-void keccak256(uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
+void evm_keccak256(uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
     evm_import_instance::instance()->keccak256(value_len, value_ptr, register_id);
     return;
 }
-void ripemd160(uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
+void evm_ripemd160(uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
     evm_import_instance::instance()->ripemd160(value_len, value_ptr, register_id);
     return;
 }
-uint64_t ecrecover(uint64_t hash_len, uint64_t hash_ptr, uint64_t sig_len, uint64_t sig_ptr, uint64_t v, uint64_t malleability_flag, uint64_t register_id) {
+uint64_t evm_ecrecover(uint64_t hash_len, uint64_t hash_ptr, uint64_t sig_len, uint64_t sig_ptr, uint64_t v, uint64_t malleability_flag, uint64_t register_id) {
     return 1;
 }
 // # Miscellaneous API #
-void value_return(uint64_t value_len, uint64_t value_ptr) {
+void evm_value_return(uint64_t value_len, uint64_t value_ptr) {
     return evm_import_instance::instance()->value_return(value_len, value_ptr);
 }
-void log_utf8(uint64_t len, uint64_t ptr) {
+void evm_log_utf8(uint64_t len, uint64_t ptr) {
     evm_import_instance::instance()->log_utf8(len, ptr);
     return;
 }
 // # Storage API #
-uint64_t storage_write(uint64_t key_len, uint64_t key_ptr, uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
+uint64_t evm_storage_write(uint64_t key_len, uint64_t key_ptr, uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
     return evm_import_instance::instance()->storage_write(key_len, key_ptr, value_len, value_ptr, register_id);
 }
-uint64_t storage_read(uint64_t key_len, uint64_t key_ptr, uint64_t register_id) {
+uint64_t evm_storage_read(uint64_t key_len, uint64_t key_ptr, uint64_t register_id) {
     return evm_import_instance::instance()->storage_read(key_len, key_ptr, register_id);
 }
-uint64_t storage_remove(uint64_t key_len, uint64_t key_ptr, uint64_t register_id) {
+uint64_t evm_storage_remove(uint64_t key_len, uint64_t key_ptr, uint64_t register_id) {
     return evm_import_instance::instance()->storage_remove(key_len, key_ptr, register_id);
 }
 }
