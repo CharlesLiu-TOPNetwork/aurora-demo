@@ -15,8 +15,8 @@ std::vector<uint8_t> serialize_function_input(std::string const & contract_addre
     unsigned char * params = (unsigned char *)malloc((contract_params.size() - 2) / 2);
     hex_string_bytes_char(contract_params, params);
 
-    std::size_t sum_size = contract_address.size() + contract_params.size();
-    uint64_t max_output_size = sum_size + ((-sum_size) & (__ALIGN - 1));
+    std::size_t sum_size = 2 * (contract_address.size() + contract_params.size());
+    uint64_t max_output_size = sum_size + ((-sum_size) & (__ALIGN - 1)); // might be risky
     unsigned char * output = (uint8_t *)malloc(max_output_size);
     uint64_t output_len = 0;
 
