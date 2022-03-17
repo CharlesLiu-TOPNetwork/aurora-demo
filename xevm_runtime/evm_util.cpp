@@ -55,7 +55,7 @@ void hex_string_bytes_char(std::string const & input, unsigned char * output) {
 }
 
 std::vector<uint8_t> hex_string_to_bytes(std::string const & input) {
-    assert(input.substr(0, 2) == "0x");
+    assert(input.substr(0, 2) == "0x" || input.substr(0, 2) == "T6");
     assert(input.size() % 2 == 0);
     std::vector<uint8_t> res;
 
