@@ -47,7 +47,7 @@ public:
                 printf("[key - unknown]: ");
             }
 
-            printf("\n");
+            printf(" extra_key.size(): %zu %s \n", decode_key.extra_key.size(), decode_key.extra_key.c_str());
             printf("[     value]: ");
             for (auto & c : pair.second) {
                 printf("%02x", c);

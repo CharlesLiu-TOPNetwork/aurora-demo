@@ -170,7 +170,7 @@ TEST(test_demo, balance) {
     auto & logic = evm_import_instance::instance()->get_vm_logic_ref();
     // auto storage = logic.ext_ref();
 
-    storage_ptr->debug(storage_key_type::Balance);
+    storage_ptr->debug();
     mock_add_balance();
     storage_ptr->debug(storage_key_type::Balance);
     mock_add_balance();
@@ -188,6 +188,7 @@ TEST(test_demo, balance) {
         "ffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001828152602001935050505060405180910390a15050565b6000548156fea26469706673582212201285a1a792cec99fd557c4fb8b1f92"
         "dccf09d34d37da99fe7de2b8526427bf3f64736f6c63430006040033");
 
+    storage_ptr->debug();
     deploy_code();
     storage_ptr->debug();
     std::string contract_address = utils::uint8_vector_to_hex_string(logic.return_value()).substr(12, 40);
@@ -213,4 +214,5 @@ TEST(test_demo, balance) {
     contract_params = "0xad7a672f";
     logic.context_ref().update_input(utils::serialize_function_input(contract_address, contract_params));
     call_contract();
+    storage_ptr->debug();
 }
