@@ -17,10 +17,10 @@ mod consts {
 pub fn ecrecover(hash: H256, signature: &[u8]) -> Result<Address, ExitError> {
     assert_eq!(signature.len(), consts::SIGN_LEN);
 
-    #[cfg(not(feature = "top_crypto"))]
-    return sdk::ecrecover(hash, signature).map_err(|e| ExitError::Other(Borrowed(e.as_str())));
-
     #[cfg(feature = "top_crypto")]
+    return sdk::ecrecover(hash, signature).map_err(|e| ExitError::Other(Borrowed(e.as_str())));
+    
+    #[cfg(not(feature = "top_crypto"))]
     internal_impl(hash, signature)
 }
 

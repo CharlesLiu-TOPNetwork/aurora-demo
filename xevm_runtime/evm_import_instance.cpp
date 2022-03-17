@@ -137,6 +137,9 @@ void ripemd160(uint64_t value_len, uint64_t value_ptr, uint64_t register_id) {
     evm_import_instance::instance()->ripemd160(value_len, value_ptr, register_id);
     return;
 }
+uint64_t ecrecover(uint64_t hash_len, uint64_t hash_ptr, uint64_t sig_len, uint64_t sig_ptr, uint64_t v, uint64_t malleability_flag, uint64_t register_id) {
+    return 1;
+}
 // # Miscellaneous API #
 void value_return(uint64_t value_len, uint64_t value_ptr) {
     return evm_import_instance::instance()->value_return(value_len, value_ptr);
