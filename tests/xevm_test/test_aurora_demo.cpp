@@ -43,7 +43,7 @@ TEST(test_demo, test_add_contract) {
         "5050505060405180910390a1505050565b6000809054906101000a900467ffffffffffffffff1681565b60006001820190507f76b87589c0efe817c6ec312c8fa2ab35ac24bbbd1e5fb8d3e3c3b4b789fdc7d48282"
         "604051808367ffffffffffffffff1667ffffffffffffffff1681526020018267ffffffffffffffff1667ffffffffffffffff1681526020019250505060405180910390a1505056fea2646970667358221220aa046f"
         "634f0927440a2dc3e5b0298f8101a60505f1d303bc416a90fcc0db54fa64736f6c63430006040033");
-    bytes predecessor_account_id = utils::string_to_bytes("mock_account");
+    bytes predecessor_account_id = utils::hex_string_to_bytes("T60000011111222223333344444555556666677777");
 
     xevm_context_t context{random_seed, input, predecessor_account_id};
     std::shared_ptr<xmock_evm_storage> storage_ptr = std::make_shared<xmock_evm_storage>();
@@ -113,7 +113,7 @@ TEST(test_demo, erc20) {
         "2001600020600082825401925050819055508273ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff167fddf252ad1be2c89b69c2b068fc378daa952ba7f1"
         "63c4a11628f55a4df523b3ef846040518082815260200191505060405180910390a36001905092915050565b600260205281600052604060002060205280600052604060002060009150915050548156fea2646970"
         "667358221220d85b6d67c18cbaefa92cadb028ffbb9d0d410e0960f7466456990c711ab8a77464736f6c63430006040033");
-    bytes predecessor_account_id = utils::string_to_bytes("mock_account");
+    bytes predecessor_account_id = utils::hex_string_to_bytes("T60000011111222223333344444555556666677777");
 
     xevm_context_t context{random_seed, input, predecessor_account_id};
     std::shared_ptr<xmock_evm_storage> storage_ptr = std::make_shared<xmock_evm_storage>();
@@ -161,7 +161,7 @@ TEST(test_demo, balance) {
         "610191565b606091505b5050809150507f171a466754afbbdce4dc1ab85f822d6767825c31a83b1113cc18bc97ddbfed2281338460405180841515151581526020018373ffffffffffffffffffffffffffffffffff"
         "ffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001828152602001935050505060405180910390a15050565b6000548156fea26469706673582212201285a1a792cec99fd557c4fb8b1f92"
         "dccf09d34d37da99fe7de2b8526427bf3f64736f6c63430006040033");
-    bytes predecessor_account_id = utils::string_to_bytes("mock_account");
+    bytes predecessor_account_id = utils::hex_string_to_bytes("T60000011111222223333344444555556666677777");
 
     xevm_context_t context{random_seed, input, predecessor_account_id};
     std::shared_ptr<xmock_evm_storage> storage_ptr = std::make_shared<xmock_evm_storage>();
